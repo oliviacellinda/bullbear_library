@@ -79,7 +79,7 @@
                                 $('#btnLogin').removeClass('disabled');
                             }
                             else if(response == 'berhasil') {
-                                window.location = '<?=base_url('admin/dashboard')?>';
+                                window.location = '<?=base_url('admin/user')?>';
                             }
                         },
                         error   : function(response) {
