@@ -82,7 +82,7 @@ class Admin extends CI_Controller {
 
     private function userList() {
         $datatables = new Datatables(new CodeigniterAdapter);
-        $query = 'SELECT `username_anggota`, `nama_anggota`, `email_anggota` FROM `anggota`';
+        $query = 'SELECT `username_member`, `nama_member`, `email_member` FROM `member`';
         $datatables->query($query);
         echo $datatables->generate();
     }
@@ -92,20 +92,20 @@ class Admin extends CI_Controller {
         $password = password_hash('12345678', PASSWORD_DEFAULT);
         $return = array();
         
-        $where = array('username_anggota' => $username);
-        $informasi_anggota = $this->model->getDataWhere('anggota', $where);
+        $where = array('username_member' => $username);
+        $informasi_member = $this->model->getDataWhere('member', $where);
 
-        if($informasi_anggota == '') {
+        if($informasi_member == '') {
             $return['type'] = 'error';
-            $return['message'] = 'Data anggota tidak ditemukan.';
+            $return['message'] = 'Data member tidak ditemukan.';
             echo json_encode($return);
             die();
         }
         else {
-            $data = array('password_anggota' => $password);
-            $this->model->updateData('anggota', $where, $data);
+            $data = array('password_member' => $password);
+            $this->model->updateData('member', $where, $data);
             $return['type'] = 'success';
-            $return['message'] = 'Berhasil mereset password anggota.';
+            $return['message'] = 'Berhasil mereset password member.';
             echo json_encode($return);
         }
     }
@@ -143,6 +143,9 @@ class Admin extends CI_Controller {
         elseif($param1 === 'detail' && $param2 != null) {
             $this->lihatVideo($param2);
         }
+        elseif($param1 === 'edit' && $param2 == null) {
+            $this->editVideo();
+        }
         elseif($param1 === 'isi' && $param2 === 'tambah') {
             $this->tambahIsiVideo();
         }
@@ -160,14 +163,7 @@ class Admin extends CI_Controller {
         }
     }
 
-    private function videoList() {
-        $datatables = new Datatables(new CodeigniterAdapter);
-        $query = 'SELECT `id_video_paket`, `nama_paket`, `harga_paket`, `tanggal_dibuat` FROM `video_paket`';
-        $datatables->query($query);
-        echo $datatables->generate();
-    }
-
-    private function tambahVideo() {
+    private function getDataVideo($param) {
         $nama = trim($this->input->post('nama'));
         $nama = htmlspecialchars(strip_tags($nama), ENT_QUOTES);
         $deskripsi = trim($this->input->post('deskripsi'));
@@ -177,8 +173,7 @@ class Admin extends CI_Controller {
         if($nama == '' || $deskripsi == '' || $harga == '' || $harga == 0) {
             $return['type'] = 'error';
             $return['message'] = 'Data tidak lengkap.';
-            json_encode($return);
-            die();
+            return $return;
         }
 
         $this->lang->load('upload', 'indonesia');
@@ -192,29 +187,89 @@ class Admin extends CI_Controller {
         $this->load->library('upload', $config);
 
         $thumbnail = '';
-        if( !$this->upload->do_upload('thumbnail') ) {
-            $return['type'] = 'error';
-            $return['message'] = $this->upload->display_errors();
-            echo json_encode($return);
-            die();
-        }
-        else {
-            $upload_data = $this->upload->data();
-            $thumbnail = $upload_data['file_name'];
+        if( $param === 'tambah' || ($param === 'edit' && isset($_FILES['thumbnail'])) ) {
+            if( !$this->upload->do_upload('thumbnail') ) {
+                $return['type'] = 'error';
+                $return['message'] = $this->upload->display_errors();
+                return $return;
+            }
+            else {
+                $upload_data = $this->upload->data();
+                $thumbnail = $upload_data['file_name'];
+            }
         }
 
-        $data = array(
+        $return['type'] = 'success';
+        $return['data'] = array(
             'nama_paket'        => $nama,
             'deskripsi_paket'   => $deskripsi,
             'harga_paket'       => $harga,
             'thumbnail_paket'   => $thumbnail,
             'tanggal_dibuat'    => date('Y-m-d H:i:s'),
         );
-        $this->model->insertData('video_paket', $data);
+        return $return;
+    }
 
-        $return['type'] = 'success';
-        $return['message'] = $this->db->insert_id();
-        echo json_encode($return);
+    private function videoList() {
+        $datatables = new Datatables(new CodeigniterAdapter);
+        $query = 'SELECT `id_video_paket`, `nama_paket`, `harga_paket`, `tanggal_dibuat` FROM `video_paket`';
+        $datatables->query($query);
+        echo $datatables->generate();
+    }
+
+    private function tambahVideo() {
+        $data = $this->getDataVideo('tambah');
+
+        if($data['type'] === 'error') {
+            echo json_encode($data);
+            die();
+        }
+        elseif($data['type'] === 'success') {
+            $this->model->insertData('video_paket', $data['data']);
+
+            $return['type'] = 'success';
+            $return['message'] = $this->db->insert_id();
+            echo json_encode($return);
+        }
+    }
+
+    private function editVideo() {
+        $id = preg_replace('/[^0-9]/', '', $this->input->post('id'));
+        $where = array('id_video_paket' => $id);
+        $informasi_video = $this->model->getDataWhere('video_paket', $where);
+
+        if($informasi_video == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data paket video tidak ditemukan.';
+            echo json_encode($return);
+            die();
+        }
+
+        $data = $this->getDataVideo('edit');
+
+        if($data['type'] === 'error') {
+            echo json_encode($data);
+            die();
+        }
+        else {
+            // Hapus thumbnail lama jika ada thumbnail baru
+            if($data['data']['thumbnail_paket'] != '') {
+                $path = './course/video/thumbnail/' . $informasi_video['thumbnail_paket'];
+                if( file_exists($path) ) {
+                    unlink($path);
+                }
+            }
+            else {
+                unset($data['data']['thumbnail_paket']);
+            }
+
+            $this->model->updateData('video_paket', $where, $data['data']);
+
+            $return['type'] = 'success';
+            $this->session->set_flashdata('type', 'success');
+            $this->session->set_flashdata('message', 'Berhasil mengedit data.');
+            echo json_encode($return);
+        }
     }
 
     private function lihatVideo($id) {
@@ -368,5 +423,338 @@ class Admin extends CI_Controller {
     | [EBO] Ebook
     | -------------------------------------------------- */
 
+    public function ebook() {
+        if($this->isLogin() == false) {
+            redirect(base_url('admin/login'));
+        }
+        else {
+            $this->load->view('admin/ebook/list');
+        }
+    }
 
+    public function ebookMenu($param1 = null, $param2 = null) {
+        if(!$this->isLogin()) {
+            redirect(base_url('admin/login'));
+        }
+        if($param1 == null) {
+            redirect(base_url('admin/ebook'));
+        }
+        elseif($param1 === 'list') {
+            $this->ebookList();
+        }
+        elseif($param1 === 'tambah' && $param2 == null) {
+            $this->load->view('admin/ebook/form');
+        }
+        elseif($param1 === 'tambah' && $param2 === 'proses') {
+            $this->tambahEbook();
+        }
+        elseif($param1 === 'detail' && $param2 != null) {
+            $this->lihatEbook($param2);
+        }
+        elseif($param1 === 'edit' && $param2 == null) {
+            $this->editEbook();
+        }
+        elseif($param1 === 'isi' && $param2 === 'tambah') {
+            $this->tambahIsiEbook();
+        }
+        elseif($param1 === 'isi' && $param2 === 'hapus') {
+            $this->hapusIsiEbook();
+        }
+        elseif($param1 === 'isi' && $param2 != null) {
+            $this->isiEbook($param2);
+        }
+        elseif($param1 === 'hapus') {
+            $this->hapusEbook();
+        }
+        else {
+            redirect(base_url('admin/login'));
+        }
+    }
+
+    private function getDataEbook($param) {
+        $nama = trim($this->input->post('nama'));
+        $nama = htmlspecialchars(strip_tags($nama), ENT_QUOTES);
+        $deskripsi = trim($this->input->post('deskripsi'));
+        $deskripsi = htmlspecialchars(strip_tags($deskripsi), ENT_QUOTES);
+        $harga = (int) preg_replace('/[^0-9]/', '', trim($this->input->post('harga')));
+
+        if($nama == '' || $deskripsi == '' || $harga == '' || $harga == 0) {
+            $return['type'] = 'error';
+            $return['message'] = 'Data tidak lengkap.';
+            return $return;
+        }
+
+        $this->lang->load('upload', 'indonesia');
+        $this->config->set_item('language', 'indonesia');
+
+		$config['upload_path']		= './course/ebook/thumbnail';
+		$config['allowed_types']	= 'jpg|png|jpeg';
+		$config['file_ext_tolower']	= true;
+		$config['overwrite']		= true;
+		$config['remove_spaces']	= true;
+        $this->load->library('upload', $config);
+
+        $thumbnail = '';
+        if( $param === 'tambah' || ($param === 'edit' && isset($_FILES['thumbnail'])) ) {
+            if( !$this->upload->do_upload('thumbnail') ) {
+                $return['type'] = 'error';
+                $return['message'] = $this->upload->display_errors();
+                return $return;
+            }
+            else {
+                $upload_data = $this->upload->data();
+                $thumbnail = $upload_data['file_name'];
+            }
+        }
+
+        $return['type'] = 'success';
+        $return['data'] = array(
+            'nama_paket'        => $nama,
+            'deskripsi_paket'   => $deskripsi,
+            'harga_paket'       => $harga,
+            'thumbnail_paket'   => $thumbnail,
+            'tanggal_dibuat'    => date('Y-m-d H:i:s'),
+        );
+        return $return;
+    }
+
+    private function ebookList() {
+        $datatables = new Datatables(new CodeigniterAdapter);
+        $query = 'SELECT `id_ebook_paket`, `nama_paket`, `harga_paket`, `tanggal_dibuat` FROM `ebook_paket`';
+        $datatables->query($query);
+        echo $datatables->generate();
+    }
+
+    private function tambahEbook() {
+        $data = $this->getDataEbook('tambah');
+
+        if($data['type'] === 'error') {
+            echo json_encode($data);
+            die();
+        }
+        elseif($data['type'] === 'success') {
+            $this->model->insertData('ebook_paket', $data['data']);
+
+            $return['type'] = 'success';
+            $return['message'] = $this->db->insert_id();
+            echo json_encode($return);
+        }
+    }
+
+    private function editEbook() {
+        $id = preg_replace('/[^0-9]/', '', $this->input->post('id'));
+        $where = array('id_ebook_paket' => $id);
+        $informasi_ebook = $this->model->getDataWhere('ebook_paket', $where);
+
+        if($informasi_ebook == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data paket ebook tidak ditemukan.';
+            echo json_encode($return);
+            die();
+        }
+
+        $data = $this->getDataEbook('edit');
+
+        if($data['type'] === 'error') {
+            echo json_encode($data);
+            die();
+        }
+        else {
+            // Hapus thumbnail lama jika ada thumbnail baru
+            if($data['data']['thumbnail_paket'] != '') {
+                $path = './course/ebook/thumbnail/' . $informasi_ebook['thumbnail_paket'];
+                if( file_exists($path) ) {
+                    unlink($path);
+                }
+            }
+            else {
+                unset($data['data']['thumbnail_ebook']);
+            }
+
+            $this->model->updateData('ebook_paket', $where, $data['data']);
+
+            $return['type'] = 'success';
+            $this->session->set_flashdata('type', 'success');
+            $this->session->set_flashdata('message', 'Berhasil mengedit data.');
+            echo json_encode($return);
+        }
+    }
+
+    private function lihatEbook($id) {
+        $where = array('id_ebook_paket' => (int) $id);
+        $data['ebook'] = $this->model->getDataWhere('ebook_paket', $where);
+
+        if($data['ebook'] == '') {
+            redirect('admin/login');
+        }
+        else {
+            $this->load->view('admin/ebook/detail', $data);
+        }
+    }
+
+    private function isiEbook($id) {
+        $where = array('id_ebook_paket' => (int) $id);
+        $isi = $this->model->getAllDataWhere('ebook_isi', $where);
+        echo json_encode($isi);
+    }
+
+    private function tambahIsiEbook() {
+        $id = (int) $this->input->post('id');
+        $judul = trim($this->input->post('judul'));
+        $judul = htmlspecialchars(strip_tags($judul), ENT_QUOTES);
+
+        if($id == '' || $id == 0 || $judul == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data tidak lengkap.';
+            json_encode($return);
+            die();
+        }
+        elseif($this->model->getDataWhere('ebook_paket', array('id_ebook_paket' => $id)) == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data paket ebook tidak ditemukan.';
+            json_encode($return);
+            die();
+        }
+
+        if( !file_exists('./course/ebook/content/'.$id) ) {
+            mkdir('./course/ebook/content/'.$id, 0777);
+        }
+
+        $this->lang->load('upload', 'indonesia');
+        $this->config->set_item('language', 'indonesia');
+
+		$config['upload_path']		= './course/ebook/content/'.$id;
+		$config['allowed_types']	= 'pdf';
+		$config['file_ext_tolower']	= true;
+		$config['overwrite']		= true;
+		$config['remove_spaces']	= true;
+        $this->load->library('upload', $config);
+
+        $video = '';
+        if( !$this->upload->do_upload('ebook') ) {
+            $return['type'] = 'error';
+            $return['message'] = $this->upload->display_errors();
+            echo json_encode($return);
+            die();
+        }
+        else {
+            $upload_data = $this->upload->data();
+            $video = $upload_data['file_name'];
+        }
+
+        $data = array(
+            'id_ebook_paket'=> $id,
+            'nama_ebook'    => $judul,
+            'file_ebook'    => $video,
+        );
+        $this->model->insertData('ebook_isi', $data);
+
+        $return['type'] = 'success';
+        $return['message'] = 'Berhasil menyimpan data.';
+        echo json_encode($return);
+    }
+
+    private function hapusIsiEbook() {
+        $id = (int) $this->input->post('id');
+        $where = array('id_ebook' => $id);
+        $informasi_ebook = $this->model->getDataWhere('ebook_isi', $where);
+
+        if($informasi_ebook == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data tidak ditemukan.';
+            echo json_encode($return);
+            die();
+        }
+
+        $path = './course/ebook/content/' . $informasi_ebook['id_ebook_paket'] . '/' . $informasi_ebook['file_ebook'];
+        if( file_exists($path) ) {
+            unlink($path);
+
+            $this->model->deleteData('ebook_isi', $where);
+
+            $return['type'] = 'success';
+            $return['message'] = 'Berhasil menghapus data.';
+            echo json_encode($return);
+        }
+        else {
+            $return['type'] = 'error';
+            $return['message'] = 'Gagal menghapus data.';
+            echo json_encode($return);
+        }
+    }
+
+    public function hapusEbook() {
+        $id = (int) $this->input->post('id');
+        $where = array('id_ebook_paket' => $id);
+        $informasi_ebook = $this->model->getDataWhere('ebook_paket', $where);
+        $isi_ebook = $this->model->getAllDataWhere('ebook_isi', $where);
+
+        if($informasi_ebook == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data tidak ditemukan.';
+            echo json_encode($return);
+            die();
+        }
+
+        try {
+            $path = './course/ebook/content/' . $informasi_ebook['id_ebook_paket'] . '/';
+            $files = glob($path . '*', GLOB_MARK);
+            foreach ($files as $file) {
+                unlink($file);
+            }
+            rmdir($path);
+            $this->model->deleteData('ebook_isi', $where);
+
+            $path = './course/ebook/thumbnail/' . $informasi_ebook['thumbnail_paket'];
+            if( file_exists($path) ) {
+                unlink($path);
+                $this->model->deleteData('ebook_paket', $where);
+                
+                $return['type'] = 'success';
+                $return['message'] = 'Berhasil menghapus data.';
+                echo json_encode($return);
+            }
+            else {
+                throw new Exception('error');
+            }
+
+        } catch (Exception $e) {
+            $return['type'] = 'error';
+            $return['message'] = 'Gagal menghapus data.';
+            echo json_encode($return);
+        }
+    }
+
+
+    /*--------------------------------------------------
+    | [TRA] Transaksi
+    | -------------------------------------------------- */
+
+    public function transaksi() {
+        if($this->isLogin() == false) {
+            redirect(base_url('admin/login'));
+        }
+        else {
+            $this->load->view('admin/transaksi/list');
+        }
+    }
+
+    public function transaksiMenu($param1 = null, $param2 = null) {
+        if(!$this->isLogin()) {
+            redirect(base_url('admin/login'));
+        }
+        if($param1 == null) {
+            redirect(base_url('admin/ebook'));
+        }
+        elseif($param1 === 'list') {
+            $this->transaksiList();
+        }
+    }
+
+    private function transaksiList() {
+        $datatables = new Datatables(new CodeigniterAdapter);
+        $query = 'SELECT `invoice`, `username_member`, `tanggal_transaksi`, `status_verifikasi`, `total_pembelian` FROM `transaksi`';
+        $datatables->query($query);
+        echo $datatables->generate();
+    }
 }

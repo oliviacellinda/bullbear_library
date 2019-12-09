@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Manajemen Video - Admin</title>
+    <title>Manajemen Ebook - Admin</title>
     <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/vendors/mdi/css/materialdesignicons.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/vendors/css/vendor.bundle.base.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/css/style.css');?>">
@@ -26,12 +26,12 @@
                 <div class="content-wrapper">
 
                     <div class="page-header">
-                        <h3 class="page-title"> Manajemen Video </h3>
+                        <h3 class="page-title"> Manajemen Ebook </h3>
                     </div>
 
                     <div class="row" style="margin-bottom: 20px;">
                         <div class="col-12">
-                            <a href="<?=base_url('admin/video/tambah');?>" class="btn btn-info btn-icon-text">
+                            <a href="<?=base_url('admin/ebook/tambah');?>" class="btn btn-info btn-icon-text">
                                 <i class="mdi mdi-plus btn-icon-prepend"></i>
                                 Tambah paket
                             </a>
@@ -42,11 +42,11 @@
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <table id="tabelVideo" class="table" width="100%" style="width: 100%;">
+                                    <table id="tabelEbook" class="table" width="100%" style="width: 100%;">
                                         <thead>
                                             <tr>
                                                 <th>Menu</th>
-                                                <th>Nama Paket Video</th>
+                                                <th>Nama Paket Ebook</th>
                                                 <th>Harga</th>
                                                 <th>Tanggal Dibuat</th>
                                             </tr>
@@ -80,7 +80,7 @@
         var tabel;
 
         $(document).ready(function() {
-            tabel = $('#tabelVideo').DataTable({
+            tabel = $('#tabelEbook').DataTable({
                 scrollX : true,
                 order : [ [1,'asc'] ],
                 searching : false,
@@ -89,12 +89,12 @@
                 serverSide : true,
                 ajax : {
                     type    : 'post',
-                    url     : '<?=base_url('admin/video/list');?>',
+                    url     : '<?=base_url('admin/ebook/list');?>',
                     dataSrc : function(datatable) {
                         let returnData = new Array();
                         for(let i=0; i<datatable.data.length; i++) {
                             returnData.push({
-                                'menu'          : datatable.data[i].id_video_paket,
+                                'menu'          : datatable.data[i].id_ebook_paket,
                                 'nama_paket'    : datatable.data[i].nama_paket,
                                 'harga_paket'   : datatable.data[i].harga_paket,
                                 'tanggal_dibuat': datatable.data[i].tanggal_dibuat,
@@ -114,7 +114,7 @@
                 ],
                 columnDefs : [
                     { targets : 0, render : function(data, type, row) {
-                            return '<a href="<?=base_url('admin/video/detail/');?>'+data+'" id="btnDetail" class="btn btn-sm btn-primary mr-1">'+
+                            return '<a href="<?=base_url('admin/ebook/detail/');?>'+data+'" id="btnDetail" class="btn btn-sm btn-primary mr-1">'+
                                 '<i class="mdi mdi-information"></i>' +
                             '</a>' +
                             '<button id="btnHapus" class="btn btn-sm btn-danger">'+
@@ -133,15 +133,15 @@
                 ],
             });
 
-            $('#tabelVideo').on('click', '#btnHapus', function() {
-                if( confirm('Apakah Anda yakin ingin menghapus paket video ini?') ) {
+            $('#tabelEbook').on('click', '#btnHapus', function() {
+                if( confirm('Apakah Anda yakin ingin menghapus paket ebook ini?') ) {
                     let tr = $(this).parents('tr');
                     let row = tabel.row(tr).data();
                     let id = row.menu;
 
                     $.ajax({
                         type    : 'post',
-                        url     : '<?=base_url('admin/video/hapus');?>',
+                        url     : '<?=base_url('admin/ebook/hapus');?>',
                         dataType: 'json',
                         data    : { id : id },
                         beforeSend: function() {

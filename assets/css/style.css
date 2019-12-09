@@ -1,5 +1,5 @@
 /*--------------------------------------------------
-| Sidebar
+| Theme
 | --------------------------------------------------*/
 
 .sidebar .nav .nav-item.active > .nav-link .menu-title {
@@ -11,6 +11,12 @@
     /* color: #6666ff !important; */
     color: #047edf !important;
 }
+
+/* @media (prefers-reduced-motion: reduce) {
+    .fade {
+        transition: opacity 0.15s linear;
+    }
+} */
 
 
 /*--------------------------------------------------

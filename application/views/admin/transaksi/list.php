@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Manajemen Video - Admin</title>
+    <title>Manajemen Transaksi - Admin</title>
     <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/vendors/mdi/css/materialdesignicons.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/vendors/css/vendor.bundle.base.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/css/style.css');?>">
@@ -26,29 +26,22 @@
                 <div class="content-wrapper">
 
                     <div class="page-header">
-                        <h3 class="page-title"> Manajemen Video </h3>
-                    </div>
-
-                    <div class="row" style="margin-bottom: 20px;">
-                        <div class="col-12">
-                            <a href="<?=base_url('admin/video/tambah');?>" class="btn btn-info btn-icon-text">
-                                <i class="mdi mdi-plus btn-icon-prepend"></i>
-                                Tambah paket
-                            </a>
-                        </div>
+                        <h3 class="page-title"> Manajemen Transaksi </h3>
                     </div>
 
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
                                 <div class="card-body">
-                                    <table id="tabelVideo" class="table" width="100%" style="width: 100%;">
+                                    <table id="tabelTransaksi" class="table" width="100%" style="width: 100%;">
                                         <thead>
                                             <tr>
                                                 <th>Menu</th>
-                                                <th>Nama Paket Video</th>
-                                                <th>Harga</th>
-                                                <th>Tanggal Dibuat</th>
+                                                <th>Tanggal Transaksi</th>
+                                                <th>No. Invoice</th>
+                                                <th>Username</th>
+                                                <th>Total Pembelian</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                     </table>
@@ -80,7 +73,7 @@
         var tabel;
 
         $(document).ready(function() {
-            tabel = $('#tabelVideo').DataTable({
+            tabel = $('#tabelTransaksi').DataTable({
                 scrollX : true,
                 order : [ [1,'asc'] ],
                 searching : false,
@@ -89,41 +82,45 @@
                 serverSide : true,
                 ajax : {
                     type    : 'post',
-                    url     : '<?=base_url('admin/video/list');?>',
+                    url     : '<?=base_url('admin/transaksi/list');?>',
                     dataSrc : function(datatable) {
                         let returnData = new Array();
                         for(let i=0; i<datatable.data.length; i++) {
                             returnData.push({
-                                'menu'          : datatable.data[i].id_video_paket,
-                                'nama_paket'    : datatable.data[i].nama_paket,
-                                'harga_paket'   : datatable.data[i].harga_paket,
-                                'tanggal_dibuat': datatable.data[i].tanggal_dibuat,
+                                'menu'              : datatable.data[i].invoice,
+                                'tanggal_transaksi' : datatable.data[i].tanggal_transaksi,
+                                'invoice'           : datatable.data[i].invoice,
+                                'username_anggota'  : datatable.data[i].username_anggota,
+                                'total_pembelian'   : datatable.data[i].total_pembelian,
+                                'status_verifikasi' : datatable.data[i].status_verifikasi,
                             });
                         }
                         return returnData;
                     },
-                    error : function() {
-                        window.location = "<?=base_url('admin/login');?>";
+                    error : function(e) { console.log(e.responseText);
+                        // window.location = "<?=base_url('admin/login');?>";
                     }
                 },
                 columns : [
                     { data : 'menu', orderable : false },
-                    { data : 'nama_paket' },
-                    { data : 'harga_paket' },
-                    { data : 'tanggal_dibuat' },
+                    { data : 'tanggal_transaksi' },
+                    { data : 'invoice' },
+                    { data : 'username_anggota' },
+                    { data : 'total_pembelian' },
+                    { data : 'status_verifikasi' },
                 ],
                 columnDefs : [
                     { targets : 0, render : function(data, type, row) {
-                            return '<a href="<?=base_url('admin/video/detail/');?>'+data+'" id="btnDetail" class="btn btn-sm btn-primary mr-1">'+
+                            return '<button id="btnVerifikasi" class="btn btn-sm btn-info mr-1">' +
+                                '<i class="mdi mdi-check"></i>' +
+                            '</button>' +
+                            '<button id="btnDetail" class="btn btn-sm btn-primary">' +
                                 '<i class="mdi mdi-information"></i>' +
-                            '</a>' +
-                            '<button id="btnHapus" class="btn btn-sm btn-danger">'+
-                                '<i class="mdi mdi-delete"></i>' +
-                            '</button>'
+                            '</button>';
                         } 
                     },
-                    { targets : 2, render : $.fn.dataTable.render.number('.', ',', 2, 'Rp ') },
-                    { targets : 3, render : function(data, type, row) {
+                    { targets : 4, render : $.fn.dataTable.render.number('.', ',', 2, 'Rp ') },
+                    { targets : 1, render : function(data, type, row) {
                             if(moment(data).isValid())
                                 return moment(data, 'YYYY-MM-DD HH:mm:ss', 'id').format('D MMMM YYYY, HH:mm');
                             else
@@ -133,33 +130,6 @@
                 ],
             });
 
-            $('#tabelVideo').on('click', '#btnHapus', function() {
-                if( confirm('Apakah Anda yakin ingin menghapus paket video ini?') ) {
-                    let tr = $(this).parents('tr');
-                    let row = tabel.row(tr).data();
-                    let id = row.menu;
-
-                    $.ajax({
-                        type    : 'post',
-                        url     : '<?=base_url('admin/video/hapus');?>',
-                        dataType: 'json',
-                        data    : { id : id },
-                        beforeSend: function() {
-                            loading('.card');
-                        },
-                        success : function(response) {
-                            showAlert(response);
-                        },
-                        error   : function(e) {
-                            toastr.error('Gagal menghapus data.', 'Error!');
-                        },
-                        complete: function() {
-                            tabel.ajax.reload(null, false);
-                            removeLoading('.card');
-                        }
-                    });
-                }
-            });
         });
     </script>
 </body>

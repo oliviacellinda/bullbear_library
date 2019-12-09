@@ -54,6 +54,10 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 
-$route['admin/user/(:any)']         = 'admin/userMenu/$1';
-$route['admin/video/(:any)']        = 'admin/videoMenu/$1';
-$route['admin/video/(:any)/(:any)'] = 'admin/videoMenu/$1/$2';
+$route['admin/user/(:any)']             = 'admin/userMenu/$1';
+$route['admin/video/(:any)']            = 'admin/videoMenu/$1';
+$route['admin/video/(:any)/(:any)']     = 'admin/videoMenu/$1/$2';
+$route['admin/ebook/(:any)']            = 'admin/ebookMenu/$1';
+$route['admin/ebook/(:any)/(:any)']     = 'admin/ebookMenu/$1/$2';
+$route['admin/transaksi/(:any)']        = 'admin/transaksiMenu/$1';
+$route['admin/transaksi/(:any)/(:any)'] = 'admin/transaksiMenu/$1/$2';
