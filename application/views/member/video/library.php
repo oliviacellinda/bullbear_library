@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home</title>
+    <title>Our Video Collection</title>
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/bootstrap.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/font-awesome.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/all.css');?>">
@@ -27,24 +27,11 @@
             <div class="container">
                 <div class="section-title text-center">
                     <h4>Videos</h4>
-                    <h2>Our Latest Videos</h2>
+                    <h2>Our Video Collection</h2>
                 </div>
                 
                 <div id="video" class="row">
                     
-                </div>
-            </div>
-        </section>
-
-        <section class="section lb littlepad">
-            <div class="container">
-                <div class="section-title text-center">
-                    <h4>E-Books</h4>
-                    <h2>Our Latest E-Books</h2>
-                </div>
-                
-                <div id="ebook" class="row">
-
                 </div>
             </div>
         </section>
@@ -63,14 +50,10 @@
     <script id="tempVideo" type="text/html">
         <?php $this->load->view('member/template/video'); ?>
     </script>
-    <script id="tempEbook" type="text/html">
-        <?php $this->load->view('member/template/ebook'); ?>
-    </script>
 
     <script>
         $(document).ready(function() {
-            loadVideo('asc', '3', '', false, function(){seeMore('video')} );
-            loadEbook('asc', '3', '', false, function(){seeMore('ebook')} );
+            loadVideo('asc', 'all', '', false, '' );
         });
     </script>
 </body>

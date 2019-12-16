@@ -85,10 +85,10 @@
                             let returnData = new Array();
                             for(let i=0; i<datatable.data.length; i++) {
                                 returnData.push({
-                                    'edit'              : datatable.data[i].username_anggota,
-                                    'username_anggota'  : datatable.data[i].username_anggota,
-                                    'nama_anggota'      : datatable.data[i].nama_anggota,
-                                    'email_anggota'     : datatable.data[i].email_anggota,
+                                    'edit'             : datatable.data[i].username_member,
+                                    'username_member'  : datatable.data[i].username_member,
+                                    'nama_member'      : datatable.data[i].nama_member,
+                                    'email_member'     : datatable.data[i].email_member,
                                 });
                             }
                             return returnData;
@@ -103,9 +103,9 @@
                 },
                 columns : [
                     { data : 'edit', orderable : false },
-                    { data : 'username_anggota' },
-                    { data : 'nama_anggota' },
-                    { data : 'email_anggota' },
+                    { data : 'username_member' },
+                    { data : 'nama_member' },
+                    { data : 'email_member' },
                 ],
                 columnDefs : [
                     { targets : 0, render : function(data, type, row) {

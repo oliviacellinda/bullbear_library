@@ -61,3 +61,9 @@ $route['admin/ebook/(:any)']            = 'admin/ebookMenu/$1';
 $route['admin/ebook/(:any)/(:any)']     = 'admin/ebookMenu/$1/$2';
 $route['admin/transaksi/(:any)']        = 'admin/transaksiMenu/$1';
 $route['admin/transaksi/(:any)/(:any)'] = 'admin/transaksiMenu/$1/$2';
+
+
+$route['member/video/(:any)']           = 'member/videoMenu/$1';
+$route['member/video/(:any)/(:any)']    = 'member/videoMenu/$1/$2';
+$route['member/ebook/(:any)']           = 'member/ebookMenu/$1';
+$route['member/ebook/(:any)/(:any)']    = 'member/ebookMenu/$1/$2';

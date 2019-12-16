@@ -65,4 +65,81 @@ class Member extends CI_Controller {
             $this->load->view('member/home');
         }
     }
+
+
+    /*--------------------------------------------------
+    | [VID] Video
+    | -------------------------------------------------- */
+
+    public function videoMenu($param1 = null, $param2 = null) {
+        if(!$this->isLogin()) {
+            redirect(base_url('member/login'));
+        }
+        elseif($param1 === 'list' && $param2 == null) {
+            $this->videoList();
+        }
+        elseif($param1 === 'library' && $param2 == null) {
+            $this->videoLibrary();
+        }
+    }
+
+    private function videoList() {
+        $sort = preg_replace('/[^a-z]/', '', $this->input->post('sort'));
+        $limit = preg_replace('/[^a-z0-9]/', '', $this->input->post('limit'));
+        $search = preg_replace('/[^a-zA-Z0-9 ]/', '', $this->input->post('search'));
+        $is_owner = preg_replace('/[^a-z]/', '', $this->input->post('is_owner'));
+
+        $data = $this->model->getContent('video', $search, $sort, $limit, $is_owner);
+        
+        if($data != '') {
+            for($i=0; $i<count($data); $i++) {
+                $data[$i]['thumbnail_paket'] = base_url('course/video/thumbnail/') . $data[$i]['thumbnail_paket'];
+            }
+        }
+
+        echo json_encode($data);
+    }
+
+    private function videoLibrary() {
+        $this->load->view('member/video/library');
+    }
+
+    
+    /*--------------------------------------------------
+    | [EBO] Ebook
+    | -------------------------------------------------- */
+
+    public function ebookMenu($param1 = null, $param2 = null) {
+        if(!$this->isLogin()) {
+            redirect(base_url('member/login'));
+        }
+        elseif($param1 === 'list' && $param2 == null) {
+            $this->ebookList();
+        }
+        elseif($param1 === 'library' && $param2 == null) {
+            $this->ebookLibrary();
+        }
+    }
+
+    private function ebookList() {
+        $sort = preg_replace('/[^a-z]/', '', $this->input->post('sort'));
+        $limit = preg_replace('/[^a-z0-9]/', '', $this->input->post('limit'));
+        $search = preg_replace('/[^a-zA-Z0-9 ]/', '', $this->input->post('search'));
+        $is_owner = preg_replace('/[^a-z]/', '', $this->input->post('is_owner'));
+
+        $data = $this->model->getContent('ebook', $search, $sort, $limit, $is_owner);
+        
+        if($data != '') {
+            for($i=0; $i<count($data); $i++) {
+                $data[$i]['thumbnail_paket'] = base_url('course/ebook/thumbnail/') . $data[$i]['thumbnail_paket'];
+            }
+        }
+
+        echo json_encode($data);
+    }
+
+    private function ebookLibrary() {
+        $this->load->view('member/ebook/library');
+    }
+
 }

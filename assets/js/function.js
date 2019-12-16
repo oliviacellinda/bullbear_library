@@ -1,3 +1,14 @@
+const base_url = {
+    admin   : 'http://localhost/bullbear_library/admin/',
+    member  : 'http://localhost/bullbear_library/member/',
+};
+
+const currency = new Intl.NumberFormat('id-ID', {
+    style	: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 2
+});
+
 function loading(element) {
     let loading = '<div class="loading"><i class="mdi mdi-reload"></i></div>';
     $(element).append(loading);
@@ -20,13 +31,17 @@ function showEllipsis(element) {
     $(element).html('<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>');
 }
 
+function removeEllipsis(element) {
+    $(element).find('.lds-ellipsis').remove();
+}
+
 function scrollToTop() {
     $('html, body').animate({ scrollTop: 0 }, 'slow');
     return false;
 }
 
 $(document).on('input', '.input-currency', function() {
-    var nilai = $(this).val();
+    let nilai = $(this).val();
     if(/[^\d]/g.test(nilai)) {
         nilai = nilai.replace(/[^\d]/g, '');
         $(this).val(nilai);
