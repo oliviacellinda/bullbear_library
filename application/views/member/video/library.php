@@ -47,13 +47,13 @@
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
 
-    <script id="tempVideo" type="text/html">
-        <?php $this->load->view('member/template/video'); ?>
+    <script id="template-ver-01" type="text/html">
+        <?php $this->load->view('member/template/ver_01'); ?>
     </script>
 
     <script>
         $(document).ready(function() {
-            loadVideo('asc', 'all', '', false, '' );
+            loadVideo('#template-ver-01', 'asc', 'all', '', false, '' );
         });
     </script>
 </body>

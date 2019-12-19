@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home</title>
+    <title>Video Content</title>
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/bootstrap.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/font-awesome.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/all.css');?>">
@@ -21,30 +21,29 @@
 <body>
     <div id="wrapper">
         <?php $this->load->view('member/header'); ?>
-        <?php $this->load->view('member/menu'); ?>
 
-        <section class="section littlepad">
+        <section class="section first-section">
             <div class="container">
-                <div class="section-title text-center">
-                    <h4>Videos</h4>
-                    <h2>Our Latest Videos</h2>
-                </div>
-                
-                <div id="video" class="row">
-                    
+                <div class="row">
+                    <div class="col-12 col-sm-5 col-md-4">
+                        <div class="screen-normal wow slideInLeft">
+                            <img src="<?=base_url('course/video/thumbnail/' . $video['thumbnail_paket']);?>" alt="" class="img-fluid">
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-7 col-md-8 mt-3 mt-sm-0">
+                        <h4><?=$video['nama_paket'];?></h4>
+                        <div><?=$video['deskripsi_paket'];?></div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="section lb littlepad">
+        <section class="section bt">
             <div class="container">
-                <div class="section-title text-center">
-                    <h4>E-Books</h4>
-                    <h2>Our Latest E-Books</h2>
-                </div>
-                
-                <div id="ebook" class="row">
-
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        
+                    </div>
                 </div>
             </div>
         </section>
@@ -60,18 +59,8 @@
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
 
-    <script id="template-ver-01" type="text/html">
-        <?php $this->load->view('member/template/ver_01'); ?>
-    </script>
-    <script id="template-ver-02" type="text/html">
-        <?php $this->load->view('member/template/ver_02'); ?>
-    </script>
-
     <script>
-        $(document).ready(function() {
-            loadVideo('#template-ver-01', 'asc', '3', '', false, function(){seeMore('video')} );
-            loadEbook('#template-ver-02', 'asc', '3', '', false, function(){seeMore('ebook')} );
-        });
+
     </script>
 </body>
 </html>

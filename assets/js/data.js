@@ -6,7 +6,7 @@ function seeMore(content) {
     $(button).appendTo('#'+content);
 }
 
-function loadVideo(sort = 'asc', limit = 'all', search = '', is_owner = false, callback) {
+function loadVideo(template, sort = 'asc', limit = 'all', search = '', is_owner = false, callback) {
     let is_empty = true;
     return $.ajax({
         type    : 'post',
@@ -30,7 +30,7 @@ function loadVideo(sort = 'asc', limit = 'all', search = '', is_owner = false, c
             }
             else if(data.length > 0) {
                 for(let i=0; i<data.length; i++) {
-                    let temp = $('#tempVideo')[0].innerHTML;
+                    let temp = $(template)[0].innerHTML;
                     temp = $.parseHTML(temp);
                     $(temp).find('#thumbnail').attr('src', data[i].thumbnail_paket);
                     $(temp).find('#title a').text(data[i].nama_paket);
@@ -55,7 +55,7 @@ function loadVideo(sort = 'asc', limit = 'all', search = '', is_owner = false, c
     });
 }
 
-function loadEbook(sort = 'asc', limit = 'all', search = '', is_owner = false, callback) {
+function loadEbook(template, sort = 'asc', limit = 'all', search = '', is_owner = false, callback) {
     let is_empty = true;
     $.ajax({
         type    : 'post',
@@ -79,7 +79,7 @@ function loadEbook(sort = 'asc', limit = 'all', search = '', is_owner = false, c
             }
             else if(data.length > 0) {
                 for(let i=0; i<data.length; i++) {
-                    let temp = $('#tempEbook')[0].innerHTML;
+                    let temp = $(template)[0].innerHTML;
                     temp = $.parseHTML(temp);
                     $(temp).find('#thumbnail').attr('src', data[i].thumbnail_paket);
                     $(temp).find('#title a').text(data[i].nama_paket);

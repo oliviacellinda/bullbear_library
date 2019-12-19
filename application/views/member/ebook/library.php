@@ -47,13 +47,13 @@
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
 
-    <script id="tempEbook" type="text/html">
-        <?php $this->load->view('member/template/ebook'); ?>
+    <script id="template-ver-01" type="text/html">
+        <?php $this->load->view('member/template/ver_01'); ?>
     </script>
 
     <script>
         $(document).ready(function() {
-            loadEbook('asc', 'all', '', false, '' );
+            loadEbook('#template-ver-01', 'asc', 'all', '', false, '' );
         });
     </script>
 </body>

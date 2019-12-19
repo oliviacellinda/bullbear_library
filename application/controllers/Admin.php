@@ -273,11 +273,12 @@ class Admin extends CI_Controller {
     }
 
     private function lihatVideo($id) {
-        $where = array('id_video_paket' => (int) $id);
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_video_paket' => $id);
         $data['video'] = $this->model->getDataWhere('video_paket', $where);
 
         if($data['video'] == '') {
-            redirect('admin/login');
+            redirect(base_url('admin/login'));
         }
         else {
             $this->load->view('admin/video/detail', $data);
@@ -285,7 +286,8 @@ class Admin extends CI_Controller {
     }
 
     private function isiVideo($id) {
-        $where = array('id_video_paket' => (int) $id);
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_video_paket' => $id);
         $isi = $this->model->getAllDataWhere('video_isi', $where);
         echo json_encode($isi);
     }
@@ -581,11 +583,12 @@ class Admin extends CI_Controller {
     }
 
     private function lihatEbook($id) {
-        $where = array('id_ebook_paket' => (int) $id);
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_ebook_paket' => $id);
         $data['ebook'] = $this->model->getDataWhere('ebook_paket', $where);
 
         if($data['ebook'] == '') {
-            redirect('admin/login');
+            redirect(base_url('admin/login'));
         }
         else {
             $this->load->view('admin/ebook/detail', $data);
@@ -593,7 +596,8 @@ class Admin extends CI_Controller {
     }
 
     private function isiEbook($id) {
-        $where = array('id_ebook_paket' => (int) $id);
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_ebook_paket' => $id);
         $isi = $this->model->getAllDataWhere('ebook_isi', $where);
         echo json_encode($isi);
     }

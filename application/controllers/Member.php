@@ -81,6 +81,9 @@ class Member extends CI_Controller {
         elseif($param1 === 'library' && $param2 == null) {
             $this->videoLibrary();
         }
+        elseif($param1 === 'content' && $param2 != null) {
+            $this->videoContent($param2);
+        }
     }
 
     private function videoList() {
@@ -102,6 +105,19 @@ class Member extends CI_Controller {
 
     private function videoLibrary() {
         $this->load->view('member/video/library');
+    }
+
+    private function videoContent($id) {
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_video_paket' => $id);
+        $data['video'] = $this->model->getDataWhere('video_paket', $where);
+
+        if($data['video'] == '') {
+            redirect(base_url('member/login'));
+        }
+        else {
+            $this->load->view('member/video/content', $data);
+        }
     }
 
     
