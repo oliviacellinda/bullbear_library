@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 19, 2019 at 10:35 AM
+-- Generation Time: Dec 19, 2019 at 10:56 AM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 7.2.10
 
@@ -122,7 +122,7 @@ CREATE TABLE `member_library` (
 
 CREATE TABLE `transaksi` (
   `invoice` varchar(255) NOT NULL,
-  `username_anggota` varchar(100) NOT NULL,
+  `username_member` varchar(100) NOT NULL,
   `id_paket` int(11) NOT NULL,
   `jenis_paket` varchar(5) NOT NULL,
   `tanggal_transaksi` datetime NOT NULL,
