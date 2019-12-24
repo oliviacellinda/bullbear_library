@@ -64,6 +64,7 @@ class Model extends CI_Model {
         if($search != '')
             $this->db->where('MATCH (nama_paket, deskripsi_paket) AGAINST ("'.$search.'" IN BOOLEAN MODE)');
 
+        $this->db->order_by('tanggal_dibuat', 'desc');
         $this->db->order_by('harga_paket', $sort);
 
         if($limit !== 'all' && is_numeric($limit))

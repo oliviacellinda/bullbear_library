@@ -111,6 +111,9 @@ class Member extends CI_Controller {
         $id = preg_replace('/[^0-9]/', '', $id);
         $where = array('id_video_paket' => $id);
         $data['video'] = $this->model->getDataWhere('video_paket', $where);
+        $data['content'] = $this->model->getAllDataWhere('video_isi', $where);
+        $where = array('jenis_library' => 'video', 'id_paket' => $id);
+        $data['is_owner'] = ($this->model->getDataWhere('member_library') == '') ? false : true;
 
         if($data['video'] == '') {
             redirect(base_url('member/login'));

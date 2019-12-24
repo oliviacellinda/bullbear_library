@@ -139,7 +139,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12">
-                            <form id="formVideo">
+                            <form>
                                 <div class="form-group">
                                     <label for="nama">Nama Paket Video</label>
                                     <input type="text" id="nama" name="nama" class="form-control" autocomplete="off" value="<?=$video['nama_paket'];?>">
