@@ -53,7 +53,7 @@
 
     <script>
         $(document).ready(function() {
-            loadVideo('#template-ver-01', 'asc', 'all', '', false, '' );
+            loadVideo('#template-ver-01', 'latest', 'all', '', false, '' );
         });
     </script>
 </body>

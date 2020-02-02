@@ -53,7 +53,7 @@
 
     <script>
         $(document).ready(function() {
-            loadEbook('#template-ver-01', 'asc', 'all', '', false, '' );
+            loadEbook('#template-ver-01', 'latest', 'all', '', false, '' );
         });
     </script>
 </body>

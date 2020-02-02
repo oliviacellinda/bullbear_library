@@ -9,7 +9,7 @@
                 <ul class="navbar-nav mr-auto mt-2 mt-md-0">
                     <li><a class="nav-link" href="<?=base_url('member/my-video');?>">My Videos</a></li>
                     <li><a class="nav-link" href="<?=base_url('member/my-ebook');?>">My E-Books</a></li>
-                    <li><a class="nav-link" href="<?=base_url('member/purchase/history');?>">Purchase History</a></li>
+                    <li><a class="nav-link" href="<?=base_url('member/purchase');?>">Purchase History</a></li>
                     <li><a class="nav-link" href="<?=base_url('member/change-password');?>">Change Password</a></li>
                     <li><a class="nav-link" href="<?=base_url('member/logout');?>">Log Out</a></li>
                 </ul>

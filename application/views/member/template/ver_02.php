@@ -1,5 +1,5 @@
 <div class="col-sm-6 col-md-4">
-    <div class="portfolio-ver-01">
+    <div class="portfolio-ver-01 mb-3 wow slideInUp">
         <div class="media-element">
             <img id="thumbnail" src="" alt="" class="img-fluid">
         </div>
@@ -12,7 +12,7 @@
                 <mark id="price"></mark>
             </div>
             <div class="float-right">
-                <a id="buy" href=""><i class="fa fa-shopping-cart"></i> Buy</a>
+                <a id="action" href=""></a>
             </div>
         </div>
     </div>

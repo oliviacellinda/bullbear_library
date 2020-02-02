@@ -56,9 +56,21 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-4 flex-grow">
+                                                    <h5 class="mb-2">Deskripsi Singkat</h5>
+                                                    <div class="ml-4 mb-0 font-weight-light">
+                                                        <?=$ebook['deskripsi_singkat'];?>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-4 flex-grow">
                                                     <h5 class="mb-2">Harga Paket</h5>
                                                     <div class="ml-4 mb-0 font-weight-light">
                                                         <?='Rp ' . number_format($ebook['harga_paket'], 2, ',', '.');?>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-4 flex-grow">
+                                                    <h5 class="mb-2">Link</h5>
+                                                    <div class="ml-4 mb-0 font-weight-light">
+                                                        <?=$ebook['link_ebook'];?>
                                                     </div>
                                                 </div>
                                                 <div class="mb-4 flex-grow">
@@ -151,6 +163,11 @@
                                     <div class="invalid-feedback">Deskripsi paket harus diisi</div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="singkat">Deskripsi Singkat</label>
+                                    <textarea id="singkat" name="singkat" class="form-control" rows="3" autocomplete="off"><?=$ebook['deskripsi_singkat'];?></textarea>
+                                    <div class="invalid-feedback">Deskripsi singkat harus diisi</div>
+                                </div>
+                                <div class="form-group">
                                     <label for="harga">Harga Paket</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -159,6 +176,11 @@
                                         <input type="text" name="harga" id="harga" class="form-control input-currency" autocomplete="off" value="<?=number_format($ebook['harga_paket'], 0, ',', '.');?>">
                                         <div class="invalid-feedback">Harga paket harus diisi</div>
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="link">Link</label>
+                                    <input type="text" name="link" id="link" class="form-control" autocomplete="off" value="<?=$ebook['link_ebook'];?>">
+                                    <div class="invalid-feedback">Link harus diisi</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="thumbnail">Thumbnail</label>
@@ -311,15 +333,19 @@
                 id = id[id.length - 1];
                 let nama = $('#nama').val().trim();
                 let deskripsi = $('#deskripsi').val().trim();
+                let singkat = $('#singkat').val().trim();
                 let harga = $('#harga').val().replace(/\./g, '');
+                let link = $('#link').val().trim();
                 let thumbnail = $('#thumbnail')[0];
 
-                if(nama == '' || deskripsi == '' || harga == '') {
+                if(nama == '' || deskripsi == '' || singkat == '' || harga == '' || link == '') {
                     toastr.error('Data tidak lengkap.', 'Error!');
                     scrollToTop();
                     if(nama == '') $('#nama').addClass('is-invalid');
                     if(deskripsi == '') $('#deskripsi').addClass('is-invalid');
+                    if(singkat == '') $('#singkat').addClass('is-invalid');
                     if(harga == '') $('#harga').addClass('is-invalid');
+                    if(link == '') $('#link').addClass('is-invalid');
                 }
                 else {
                     if(thumbnail.files.length == 0) thumbnail = '';
@@ -329,7 +355,9 @@
                     formData.append('id', id);
                     formData.append('nama', nama);
                     formData.append('deskripsi', deskripsi);
+                    formData.append('singkat', singkat);
                     formData.append('harga', harga);
+                    formData.append('link', link);
                     formData.append('thumbnail', thumbnail);
                     
                     $.ajax({
@@ -350,9 +378,12 @@
                                 showAlert(response);
                             }
                         },
-                        error   : function(e) {
+                        error   : function(e) { console.log(e.responseText);
                             scrollToTop();
                             toastr.error('Gagal menyimpan data.', 'Error!');
+                        },
+                        complete: function() {
+                            removeLoading('.modal-body');
                         }
                     });
                 }

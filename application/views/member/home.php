@@ -21,9 +21,8 @@
 <body>
     <div id="wrapper">
         <?php $this->load->view('member/header'); ?>
-        <?php $this->load->view('member/menu'); ?>
 
-        <section class="section littlepad">
+        <section class="section">
             <div class="container">
                 <div class="section-title text-center">
                     <h4>Videos</h4>
@@ -69,8 +68,8 @@
 
     <script>
         $(document).ready(function() {
-            loadVideo('#template-ver-01', 'asc', '3', '', false, function(){seeMore('video')} );
-            loadEbook('#template-ver-02', 'asc', '3', '', false, function(){seeMore('ebook')} );
+            loadVideo('#template-ver-01', 'latest', '3', '', false, function(){seeMore('video')} );
+            loadEbook('#template-ver-02', 'latest', '3', '', false, function(){seeMore('ebook')} );
         });
     </script>
 </body>

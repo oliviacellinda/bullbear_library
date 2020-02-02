@@ -45,6 +45,11 @@ class Member extends CI_Controller {
         }
     }
 
+    public function logout() {
+        session_destroy();
+        redirect(base_url('member/login'));
+    }
+
     private function isLogin() {
         if($this->session->bullbear_username_member != '')
             return true;
@@ -71,6 +76,15 @@ class Member extends CI_Controller {
     | [VID] Video
     | -------------------------------------------------- */
 
+    public function myVideo() {
+        if(!$this->isLogin()) {
+            redirect(base_url('member/login'));
+        }
+        else {
+            $this->load->view('member/video/my_video');
+        }
+    }
+
     public function videoMenu($param1 = null, $param2 = null) {
         if(!$this->isLogin()) {
             redirect(base_url('member/login'));
@@ -84,6 +98,9 @@ class Member extends CI_Controller {
         elseif($param1 === 'content' && $param2 != null) {
             $this->videoContent($param2);
         }
+        elseif($param1 === 'buy' && $param2 != null) {
+            $this->buyVideo($param2);
+        }
     }
 
     private function videoList() {
@@ -91,7 +108,7 @@ class Member extends CI_Controller {
         $limit = preg_replace('/[^a-z0-9]/', '', $this->input->post('limit'));
         $search = preg_replace('/[^a-zA-Z0-9 ]/', '', $this->input->post('search'));
         $is_owner = preg_replace('/[^a-z]/', '', $this->input->post('is_owner'));
-
+        
         $data = $this->model->getContent('video', $search, $sort, $limit, $is_owner);
         
         if($data != '') {
@@ -112,8 +129,8 @@ class Member extends CI_Controller {
         $where = array('id_video_paket' => $id);
         $data['video'] = $this->model->getDataWhere('video_paket', $where);
         $data['content'] = $this->model->getAllDataWhere('video_isi', $where);
-        $where = array('jenis_library' => 'video', 'id_paket' => $id);
-        $data['is_owner'] = ($this->model->getDataWhere('member_library') == '') ? false : true;
+        $where = array('username_member' => $this->session->bullbear_username_member, 'jenis_paket' => 'video', 'id_paket' => $id);
+        $data['is_owner'] = ($this->model->getDataWhere('member_paket', $where) == '') ? false : true;
 
         if($data['video'] == '') {
             redirect(base_url('member/login'));
@@ -123,10 +140,34 @@ class Member extends CI_Controller {
         }
     }
 
+    private function buyVideo($id) {
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_video_paket' => $id);
+        $video = $this->model->getDataWhere('video_paket', $where);
+
+        if($video == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data tidak ditemukan.';
+            echo json_encode($return);
+        }
+        else {
+            
+        }
+    }
+
     
     /*--------------------------------------------------
     | [EBO] Ebook
     | -------------------------------------------------- */
+
+    public function myEbook() {
+        if(!$this->isLogin()) {
+            redirect(base_url('member/login'));
+        }
+        else {
+            $this->load->view('member/ebook/my_ebook');
+        }
+    }
 
     public function ebookMenu($param1 = null, $param2 = null) {
         if(!$this->isLogin()) {
@@ -138,6 +179,12 @@ class Member extends CI_Controller {
         elseif($param1 === 'library' && $param2 == null) {
             $this->ebookLibrary();
         }
+        elseif($param1 === 'content' && $param2 != null) {
+            $this->ebookContent($param2);
+        }
+        elseif($param1 === 'buy' && $param2 != null) {
+            $this->buyEbook($param2);
+        }
     }
 
     private function ebookList() {
@@ -145,7 +192,7 @@ class Member extends CI_Controller {
         $limit = preg_replace('/[^a-z0-9]/', '', $this->input->post('limit'));
         $search = preg_replace('/[^a-zA-Z0-9 ]/', '', $this->input->post('search'));
         $is_owner = preg_replace('/[^a-z]/', '', $this->input->post('is_owner'));
-
+        
         $data = $this->model->getContent('ebook', $search, $sort, $limit, $is_owner);
         
         if($data != '') {
@@ -161,4 +208,65 @@ class Member extends CI_Controller {
         $this->load->view('member/ebook/library');
     }
 
+    private function ebookContent($id) {
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_ebook_paket' => $id);
+        $data['ebook'] = $this->model->getDataWhere('ebook_paket', $where);
+        $data['content'] = $this->model->getAllDataWhere('ebook_isi', $where);
+        $where = array('username_member' => $this->session->bullbear_username_member, 'jenis_paket' => 'ebook', 'id_paket' => $id);
+        $data['is_owner'] = ($this->model->getDataWhere('member_paket', $where) == '') ? false : true;
+
+        if($data['ebook'] == '') {
+            redirect(base_url('member/login'));
+        }
+        else {
+            $this->load->view('member/ebook/content', $data);
+        }
+    }
+
+    private function buyEbook($id) {
+        $id = preg_replace('/[^0-9]/', '', $id);
+        $where = array('id_ebook_paket' => $id);
+        $video = $this->model->getDataWhere('ebook_paket', $where);
+
+        if($video == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data tidak ditemukan.';
+            echo json_encode($return);
+        }
+        else {
+            
+        }
+    }
+
+
+    /*--------------------------------------------------
+    | [TRA] Transactions
+    | -------------------------------------------------- */
+
+    public function purchase($param = null) {
+        if(!$this->isLogin()) {
+            redirect(base_url('member/login'));
+        }
+        elseif($param === 'history') {
+            $query = "SELECT tanggal_transaksi, jenis_paket, status_verifikasi, total_pembelian, 
+                             nama_paket, deskripsi_singkat, thumbnail_paket
+                      FROM transaksi
+                      LEFT JOIN video_paket ON transaksi.id_paket = video_paket.id_video_paket 
+                      WHERE username_member = '" . $this->session->bullbear_username_member . "' AND transaksi.jenis_paket = 'video' 
+                      UNION 
+                      SELECT tanggal_transaksi, jenis_paket, status_verifikasi, total_pembelian, 
+                             nama_paket, deskripsi_singkat, thumbnail_paket
+                      FROM transaksi
+                      LEFT JOIN ebook_paket ON transaksi.id_paket = ebook_paket.id_ebook_paket  
+                      WHERE username_member = '" . $this->session->bullbear_username_member . "' AND transaksi.jenis_paket = 'ebook'";
+            
+            $datatables = new Datatables(new CodeigniterAdapter);
+            $datatables->query($query);
+            echo $datatables->generate();
+        }
+        else {
+            $this->load->view('member/transaksi');
+        }
+    }
 }

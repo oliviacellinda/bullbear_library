@@ -29,6 +29,15 @@
                         <h3 class="page-title"> Manajemen Transaksi </h3>
                     </div>
 
+                    <div class="row" style="margin-bottom: 20px;">
+                        <div class="col-12">
+                            <a href="<?=base_url('admin/transaksi/tambah');?>" class="btn btn-info btn-icon-text">
+                                <i class="mdi mdi-plus btn-icon-prepend"></i>
+                                Tambah transaksi
+                            </a>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-12 grid-margin stretch-card">
                             <div class="card">
@@ -90,36 +99,44 @@
                                 'menu'              : datatable.data[i].invoice,
                                 'tanggal_transaksi' : datatable.data[i].tanggal_transaksi,
                                 'invoice'           : datatable.data[i].invoice,
-                                'username_anggota'  : datatable.data[i].username_anggota,
+                                'username_member'   : datatable.data[i].username_member,
                                 'total_pembelian'   : datatable.data[i].total_pembelian,
                                 'status_verifikasi' : datatable.data[i].status_verifikasi,
                             });
                         }
                         return returnData;
                     },
-                    error : function(e) { console.log(e.responseText);
-                        // window.location = "<?=base_url('admin/login');?>";
+                    error : function(e) {
+                        window.location = "<?=base_url('admin/login');?>";
                     }
                 },
                 columns : [
                     { data : 'menu', orderable : false },
                     { data : 'tanggal_transaksi' },
                     { data : 'invoice' },
-                    { data : 'username_anggota' },
+                    { data : 'username_member' },
                     { data : 'total_pembelian' },
                     { data : 'status_verifikasi' },
                 ],
                 columnDefs : [
                     { targets : 0, render : function(data, type, row) {
-                            return '<button id="btnVerifikasi" class="btn btn-sm btn-info mr-1">' +
-                                '<i class="mdi mdi-check"></i>' +
-                            '</button>' +
-                            '<button id="btnDetail" class="btn btn-sm btn-primary">' +
+                            let button = '';
+                            if(row.status_verifikasi == true) {
+                                button = '<button id="btnVerifikasi" class="btn btn-sm btn-info mr-1" disabled>' +
+                                    '<i class="mdi mdi-check"></i>' +
+                                '</button>';
+                            }
+                            else {
+                                button = '<button id="btnVerifikasi" class="btn btn-sm btn-info mr-1">' +
+                                    '<i class="mdi mdi-check"></i>' +
+                                '</button>';
+                            }
+                            button += '<button id="btnDetail" class="btn btn-sm btn-primary">' +
                                 '<i class="mdi mdi-information"></i>' +
                             '</button>';
+                            return button;
                         } 
                     },
-                    { targets : 4, render : $.fn.dataTable.render.number('.', ',', 2, 'Rp ') },
                     { targets : 1, render : function(data, type, row) {
                             if(moment(data).isValid())
                                 return moment(data, 'YYYY-MM-DD HH:mm:ss', 'id').format('D MMMM YYYY, HH:mm');
@@ -127,9 +144,23 @@
                                 return "-";
                         } 
                     },
+                    { targets : 4, render : $.fn.dataTable.render.number('.', ',', 2, 'Rp ') },
+                    { targets : 5, render : function(data, type, row) {
+                            return (data == true) ? 'Telah diverifikasi' : 'Menunggu verifikasi';
+                        } 
+                    },
                 ],
             });
 
+            $('#tabelTransaksi').on('click', '#btnDetail', function() {
+                let tr = $(this).parents('tr');
+                let row = tabel.row(tr).data();
+                let id = row.menu;
+
+                $.ajax({
+                    
+                });
+            });
         });
     </script>
 </body>

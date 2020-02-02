@@ -67,3 +67,6 @@ $route['member/video/(:any)']           = 'member/videoMenu/$1';
 $route['member/video/(:any)/(:any)']    = 'member/videoMenu/$1/$2';
 $route['member/ebook/(:any)']           = 'member/ebookMenu/$1';
 $route['member/ebook/(:any)/(:any)']    = 'member/ebookMenu/$1/$2';
+
+$route['member/my-video']               = 'member/myVideo';
+$route['member/my-ebook']               = 'member/myEbook';

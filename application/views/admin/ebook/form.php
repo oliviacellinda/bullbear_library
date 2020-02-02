@@ -48,6 +48,11 @@
                                                 <div class="invalid-feedback">Deskripsi paket harus diisi</div>
                                             </div>
                                             <div class="form-group">
+                                                <label for="singkat">Deskripsi Singkat</label>
+                                                <textarea name="singkat" id="singkat" class="form-control" rows="3" autocomplete="off"></textarea>
+                                                <div class="invalid-feedback">Deskripsi singkat harus diisi</div>
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="harga">Harga Paket</label>
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
@@ -56,6 +61,11 @@
                                                     <input type="text" name="harga" id="harga" class="form-control input-currency" autocomplete="off">
                                                     <div class="invalid-feedback">Harga paket harus diisi</div>
                                                 </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="link">Link</label>
+                                                <input type="text" name="link" id="link" class="form-control" autocomplete="off">
+                                                <div class="invalid-feedback">Link harus diisi</div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="thumbnail">Thumbnail</label>
@@ -109,22 +119,28 @@
 
                 let nama = $('#nama').val().trim();
                 let deskripsi = $('#deskripsi').val().trim();
+                let singkat = $('#singkat').val().trim();
                 let harga = $('#harga').val().replace(/\./g, '');
+                let link = $('#link').val().trim();
                 let thumbnail = $('#thumbnail')[0];
 
-                if(nama == '' || deskripsi == '' || harga == '' || thumbnail.files.length == 0) {
+                if(nama == '' || deskripsi == '' || singkat == '' || harga == '' || link == '' || thumbnail.files.length == 0) {
                     toastr.error('Data tidak lengkap.', 'Error!');
                     scrollToTop();
                     if(nama == '') $('#nama').addClass('is-invalid');
                     if(deskripsi == '') $('#deskripsi').addClass('is-invalid');
+                    if(singkat == '') $('#singkat').addClass('is-invalid');
                     if(harga == '') $('#harga').addClass('is-invalid');
+                    if(link == '') $('#link').addClass('is-invalid');
                     if(thumbnail.files.length == 0) $('#thumbnail').parents('.form-group').find('.invalid-feedback').css('display', 'block');
                 }
                 else {
                     let formData = new FormData();
                     formData.append('nama', nama);
                     formData.append('deskripsi', deskripsi);
+                    formData.append('singkat', deskripsi);
                     formData.append('harga', harga);
+                    formData.append('link', link);
                     formData.append('thumbnail', thumbnail.files[0]);
                     
                     $.ajax({
@@ -135,19 +151,22 @@
                         contentType : false,
                         processData : false,
                         beforeSend  : function() {
-                            loading();
+                            loading('.card');
                         },
-                        success : function(response) { console.log(response);
+                        success : function(response) {
                             if(response.type == 'success') {
-                                // window.location = '<?=base_url('admin/ebook/detail/');?>' + response.message;
+                                window.location = '<?=base_url('admin/ebook/detail/');?>' + response.message;
                             }
                             else {
                                 showAlert(response);
                             }
                         },
-                        error   : function(e) { console.log(e.responseText);
+                        error   : function() {
                             scrollToTop();
                             toastr.error('Gagal menyimpan data.', 'Error!');
+                        },
+                        complete: function() {
+                            removeLoading('.card');
                         }
                     });
                 }

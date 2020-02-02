@@ -2,14 +2,15 @@
     <div class="container">
         <div class="row">
             <div class="col-12 col-sm-6">
-                <span class="mr-3">Filter</span>
-                <div class="dropdown" id="btnFilter" style="display: inline-block;">
+                <span class="mr-3">Sort by</span>
+                <div class="dropdown" id="btnFilter" style="display: inline-block;" data-sort="latest">
                     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Price [ASC]
+                        Latest product
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" style="cursor: pointer" data-sort="asc">Ascending</a>
-                        <a class="dropdown-item" style="cursor: pointer" data-sort="desc">Descending</a>
+                        <a class="dropdown-item" style="cursor: pointer" data-sort="latest">Latest product</a>
+                        <a class="dropdown-item" style="cursor: pointer" data-sort="asc">Price (ascending)</a>
+                        <a class="dropdown-item" style="cursor: pointer" data-sort="desc">Price (descending)</a>
                     </div>
                 </div>
             </div>

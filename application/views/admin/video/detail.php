@@ -13,6 +13,25 @@
     <link rel="stylesheet" href="<?=base_url('assets/toastr/toastr.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/lds-ellipsis.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/style.css');?>">
+    <style>
+        @media (max-width: 767px) {
+            .duration {
+                display: block;
+            }
+            .duration::before {
+                content: "(";
+            }
+        }
+        @media (min-width: 768px) {
+            .duration::before {
+                content: " (";
+                white-space: pre;
+            }
+        }
+        .duration::after {
+            content: ')';
+        }
+    </style>
 </head>
 <body>
     
@@ -56,9 +75,21 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-4 flex-grow">
+                                                    <h5 class="mb-2">Deskripsi Singkat</h5>
+                                                    <div class="ml-4 mb-0 font-weight-light">
+                                                        <?=$video['deskripsi_singkat'];?>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-4 flex-grow">
                                                     <h5 class="mb-2">Harga Paket</h5>
                                                     <div class="ml-4 mb-0 font-weight-light">
                                                         <?='Rp ' . number_format($video['harga_paket'], 2, ',', '.');?>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-4 flex-grow">
+                                                    <h5 class="mb-2">Link</h5>
+                                                    <div class="ml-4 mb-0 font-weight-light">
+                                                        <?=$video['link_video'];?>
                                                     </div>
                                                 </div>
                                                 <div class="mb-4 flex-grow">
@@ -70,13 +101,13 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6 mt-5">
-                                                <button class="btn btn-info btn-icon-text mb-4" data-toggle="modal" data-target="#modalVideo">
-                                                    <i class="mdi mdi-plus btn-icon-prepend"></i>
-                                                    Tambah video
-                                                </button>
-                                                <ul class="list-group">
-                                                    
-                                                </ul>
+                                            <button class="btn btn-info btn-icon-text mb-4" data-toggle="modal" data-target="#modalVideo">
+                                                <i class="mdi mdi-plus btn-icon-prepend"></i>
+                                                Tambah video
+                                            </button>
+                                            <ul class="list-group">
+                                                
+                                            </ul>
                                         </div>
                                     </div>
                                     
@@ -151,6 +182,11 @@
                                     <div class="invalid-feedback">Deskripsi paket harus diisi</div>
                                 </div>
                                 <div class="form-group">
+                                    <label for="singkat">Deskripsi Singkat</label>
+                                    <textarea id="singkat" name="singkat" class="form-control" rows="3" autocomplete="off"><?=$video['deskripsi_singkat'];?></textarea>
+                                    <div class="invalid-feedback">Deskripsi singkat harus diisi</div>
+                                </div>
+                                <div class="form-group">
                                     <label for="harga">Harga Paket</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -159,6 +195,11 @@
                                         <input type="text" name="harga" id="harga" class="form-control input-currency" autocomplete="off" value="<?=number_format($video['harga_paket'], 0, ',', '.');?>">
                                         <div class="invalid-feedback">Harga paket harus diisi</div>
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="link">Link</label>
+                                    <input type="text" name="link" id="link" class="form-control" autocomplete="off" value="<?=$video['link_video'];?>">
+                                    <div class="invalid-feedback">Link harus diisi</div>
                                 </div>
                                 <div class="form-group">
                                     <label for="thumbnail">Thumbnail</label>
@@ -208,7 +249,10 @@
                         let li = '';
                         for(let i=0; i<data.length; i++) {
                             li += '<li class="list-group-item d-flex justify-content-between align-items-center">' +
-                                data[i].nama_video +
+                                '<div class="d-flex-row">' +
+                                    data[i].nama_video +
+                                    '<span class="duration">'+data[i].durasi_video+'</span>' +
+                                '</div>' +
                                 '<span class="btn-icon-only badge badge-danger badge-pill" data-id="'+data[i].id_video+'">' +
                                     '<i class="fa fa-times"></i>'
                                 '</span>' +
@@ -250,30 +294,53 @@
                 formData.append('judul', $('#judul').val().trim());
                 formData.append('video', $('#upload')[0].files[0]);
                 
-                $.ajax({
-                    type    : 'post',
-                    url     : '<?=base_url('admin/video/isi/tambah');?>',
-                    dataType: 'json',
-                    data    : formData,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function() {
-                        loading('.modal-body');
-                        $('.modal-footer button').prop('disabled', true);
-                    },
-                    success : function(data) {
-                        showAlert(data);
-                    },
-                    error   : function(e) {
-                        toastr.error('Gagal menyimpan data.', 'Error!');
-                    },
-                    complete: function() {
-                        $('#formVideo').trigger('reset');
-                        removeLoading('.modal-body');
-                        $('.modal-footer button').prop('disabled', false);
-                        $('#modalVideo').modal('hide');
-                        loadVideo();
+                let promise = new Promise(function(resolve, reject) {
+                    let video = document.createElement('video');
+                    video.src = URL.createObjectURL($('#upload')[0].files[0]);
+                    video.ondurationchange = function() {
+                        hour = Math.floor(video.duration / 3600);
+                        minute = Math.floor( (video.duration % 3600) / 60 );
+                        second = Math.floor( (video.duration % 3600) % 60 );
+
+                        hour = (hour < 10) ? '0'+hour : hour;
+                        minute = (minute < 10) ? '0'+minute : minute;
+                        second = (second < 10) ? '0'+second : second;
+                        
+                        resolve(hour + ':' + minute + ':' + second);
                     }
+                });
+
+                promise.then(function(result) {
+                    // resolve callback
+                    formData.append('durasi', result);
+                    $.ajax({
+                        type    : 'post',
+                        url     : '<?=base_url('admin/video/isi/tambah');?>',
+                        dataType: 'json',
+                        data    : formData,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function() {
+                            loading('.modal-body');
+                            $('.modal-footer button').prop('disabled', true);
+                        },
+                        success : function(data) {
+                            showAlert(data);
+                        },
+                        error   : function(e) {
+                            toastr.error('Gagal menyimpan data.', 'Error!');
+                        },
+                        complete: function() {
+                            $('#formVideo').trigger('reset');
+                            removeLoading('.modal-body');
+                            $('.modal-footer button').prop('disabled', false);
+                            $('#modalVideo').modal('hide');
+                            loadVideo();
+                        }
+                    });
+                }, function(result) {
+                    // reject callback
+                    toastr.error('Gagal menyimpan data.', 'Error!');
                 });
             });
 
@@ -311,15 +378,19 @@
                 id = id[id.length - 1];
                 let nama = $('#nama').val().trim();
                 let deskripsi = $('#deskripsi').val().trim();
+                let singkat = $('#singkat').val().trim();
                 let harga = $('#harga').val().replace(/\./g, '');
+                let link = $('#link').val().trim();
                 let thumbnail = $('#thumbnail')[0];
 
-                if(nama == '' || deskripsi == '' || harga == '') {
+                if(nama == '' || deskripsi == '' || singkat == '' || harga == '' || link == '') {
                     toastr.error('Data tidak lengkap.', 'Error!');
                     scrollToTop();
                     if(nama == '') $('#nama').addClass('is-invalid');
                     if(deskripsi == '') $('#deskripsi').addClass('is-invalid');
+                    if(singkat == '') $('#singkat').addClass('is-invalid');
                     if(harga == '') $('#harga').addClass('is-invalid');
+                    if(link == '') $('#link').addClass('is-invalid');
                 }
                 else {
                     if(thumbnail.files.length == 0) thumbnail = '';
@@ -329,7 +400,9 @@
                     formData.append('id', id);
                     formData.append('nama', nama);
                     formData.append('deskripsi', deskripsi);
+                    formData.append('singkat', singkat);
                     formData.append('harga', harga);
+                    formData.append('link', link);
                     formData.append('thumbnail', thumbnail);
                     
                     $.ajax({
@@ -353,6 +426,9 @@
                         error   : function(e) {
                             scrollToTop();
                             toastr.error('Gagal menyimpan data.', 'Error!');
+                        },
+                        complete: function() {
+                            removeLoading('.modal-body');
                         }
                     });
                 }

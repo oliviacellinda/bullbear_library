@@ -1,4 +1,5 @@
 const base_url = {
+    index   : 'http://localhost/bullbear_library/',
     admin   : 'http://localhost/bullbear_library/admin/',
     member  : 'http://localhost/bullbear_library/member/',
 };

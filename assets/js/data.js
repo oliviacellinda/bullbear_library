@@ -35,8 +35,17 @@ function loadVideo(template, sort = 'asc', limit = 'all', search = '', is_owner 
                     $(temp).find('#thumbnail').attr('src', data[i].thumbnail_paket);
                     $(temp).find('#title a').text(data[i].nama_paket);
                     $(temp).find('#title a').prop('href', 'video/content/' + data[i].id_video_paket);
-                    $(temp).find('#description').text(data[i].deskripsi_paket);
+                    $(temp).find('#description').text(data[i].deskripsi_singkat);
                     $(temp).find('#price').text(currency.format(data[i].harga_paket));
+
+                    if(is_owner) {
+                        $(temp).find('#action').html('<i class="fa fa-pencil"></i> Learn');
+                    }
+                    else {
+                        $(temp).find('#action').html('<i class="fa fa-shopping-cart"></i> Buy');
+                    }
+                    $(temp).find('#action').prop('href', base_url.member + 'video/content/' + data[i].id_video_paket);
+
                     $(temp).appendTo('.section #video');
                 }
                 is_empty = false;
@@ -84,8 +93,17 @@ function loadEbook(template, sort = 'asc', limit = 'all', search = '', is_owner 
                     $(temp).find('#thumbnail').attr('src', data[i].thumbnail_paket);
                     $(temp).find('#title a').text(data[i].nama_paket);
                     $(temp).find('#title a').prop('href', 'ebook/content/' + data[i].id_ebook_paket);
-                    $(temp).find('#description').text(data[i].deskripsi_paket);
+                    $(temp).find('#description').text(data[i].deskripsi_singkat);
                     $(temp).find('#price').text(currency.format(data[i].harga_paket));
+
+                    if(is_owner) {
+                        $(temp).find('#action').html('<i class="fa fa-pencil"></i> Learn');
+                    }
+                    else {
+                        $(temp).find('#action').html('<i class="fa fa-shopping-cart"></i> Buy');
+                    }
+                    $(temp).find('#action').prop('href', base_url.member + 'ebook/content/' + data[i].id_ebook_paket);
+
                     $(temp).appendTo('.section #ebook');
                 }
                 is_empty = false;
@@ -104,30 +122,30 @@ function loadEbook(template, sort = 'asc', limit = 'all', search = '', is_owner 
     });
 }
 
-function filterContent() {
+function filterContent(text) {
     let sort = $('#btnFilter').data('sort');
     let url = window.location.href;
     segment = url.split('/');
 
     let search = $('#search').val().trim();
 
-    if( segment.findIndex(arr => arr === 'home') !== -1 ) {
-        loadVideo(sort, 3, search, false, function(){seeMore('video')} );
-        loadEbook(sort, 3, search, false, function(){seeMore('ebook')} );
-    }
-    else if(segment.findIndex(arr => arr === 'video') !== -1) {
-        loadVideo(sort, 'all', search, false, function(){seeMore('video')} );
+    // if( segment.findIndex(arr => arr === 'home') !== -1 ) {
+    //     loadVideo(sort, 3, search, false, function(){seeMore('video')} );
+    //     loadEbook(sort, 3, search, false, function(){seeMore('ebook')} );
+    // }
+    if(segment.findIndex(arr => arr === 'video') !== -1) {
+        loadVideo('#template-ver-01', sort, 'all', search, false, '' );
     }
     else if(segment.findIndex(arr => arr === 'ebook') !== -1) {
-        loadVideo(sort, 'all', search, false, function(){seeMore('ebook')} );
+        loadVideo('#template-ver-01', sort, 'all', search, false, '' );
     }
 
-    $('#btnFilter').find('button').text('Price [' + sort.toUpperCase() + ']');
+    $('#btnFilter').find('button').text(text);
 }
 
 $('#btnFilter .dropdown-item').click(function() {
     $('#btnFilter').data('sort', $(this).data('sort'));
-    filterContent();
+    filterContent($(this).text());
 });
 
 $('#btnSearch').click(function() {
