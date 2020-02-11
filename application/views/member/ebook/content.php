@@ -114,6 +114,9 @@
             </div>
         </section>
 
+        <div class="body-overlay">
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        </div>
     </div>
 
     <div class="dmtop"><i class="fa fa-long-arrow-up"></i></div>
@@ -138,18 +141,27 @@
     <script>
         $('#btnGateway').click(function() {
             $.ajax({
-                type    : 'get',
-                url     : '<?=base_url('member/ebook/buy/'.$ebook['id_ebook_paket']);?>',
+                type    : 'post',
+                url     : '<?=base_url('member/transaction/new');?>',
+                data    : { type : 'ebook', id : '<?=$ebook['id_ebook_paket'];?>' },
                 dataType: 'json',
                 beforeSend: function() {
-
+                    $('.body-overlay').show();
                 },
                 success : function(response) {
-                    showAlert(response);
+                    if(response.type == 'success') {
+                        window.location = response.redirect_url;
+                    }
+                    else {
+                        showAlert(response);
+                    }
                 },
                 error   : function(response) {
                     console.log(response.responseText);
-                    toastr.error('Gagal melakukan proses pembayaran.', 'Error!');
+                    toastr.error('Internal server error.', 'Error!');
+                },
+                complete : function() {
+                    $('.body-overlay').hide();
                 }
             });
         });

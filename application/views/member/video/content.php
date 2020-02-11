@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/colors.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/video.js/dist/video-js.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/video.js/themes/fantasy/index.css');?>">
+    <link rel="stylesheet" href="<?=base_url('assets/toastr/toastr.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/lds-ellipsis.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/custom.css');?>">
     <!--[if lt IE 9]>
@@ -140,6 +141,9 @@
             </div>
         </section>
 
+        <div class="body-overlay">
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        </div>
     </div>
 
     <div class="dmtop"><i class="fa fa-long-arrow-up"></i></div>
@@ -149,6 +153,7 @@
     <script src="<?=base_url('assets/micrology-master/js/all.js');?>"></script>
     <script src="<?=base_url('assets/micrology-master/js/custom.js');?>"></script>
     <script src="<?=base_url('assets/video.js/dist/video.min.js');?>"></script>
+    <script src="<?=base_url('assets/toastr/toastr.min.js');?>"></script>
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
 
@@ -191,18 +196,27 @@
     <script>
         $('#btnGateway').click(function() {
             $.ajax({
-                type    : 'get',
-                url     : '<?=base_url('member/video/purchase/'.$video['id_video_paket']);?>',
+                type    : 'post',
+                url     : '<?=base_url('member/transaction/new');?>',
+                data    : { type : 'video', id : '<?=$video['id_video_paket'];?>' },
                 dataType: 'json',
                 beforeSend: function() {
-
+                    $('.body-overlay').show();
                 },
                 success : function(response) {
-                    showAlert(response);
+                    if(response.type == 'success') {
+                        window.location = response.redirect_url;
+                    }
+                    else {
+                        showAlert(response);
+                    }
                 },
                 error   : function(response) {
                     console.log(response.responseText);
-                    toastr.error('Gagal melakukan proses pembayaran.', 'Error!');
+                    toastr.error('Internal server error.', 'Error!');
+                },
+                complete : function() {
+                    $('.body-overlay').hide();
                 }
             });
         });

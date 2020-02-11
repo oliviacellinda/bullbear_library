@@ -18,6 +18,26 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <style>
+        .detail-image {
+            max-width: 100%;
+            display: inline-block;
+        }
+        .detail-title {
+            max-width: 100%;
+            display: inline-block;
+        }
+        @media (min-width: 992px) {
+            .detail-image {
+                max-width: 33.333333%;
+            }
+            .detail-title {
+                max-width: 66.666666%;
+                padding-left: 10px;
+                vertical-align: top;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="wrapper">
@@ -61,36 +81,6 @@
         var table;
 
         $(document).ready(function() {
-            // table = $('#tablePurchase').DataTable({
-            //     scrollX : true,
-            //     searching : false,
-            //     processing : true,
-            //     language : { processing : 'Loading...' },
-            //     serverSide : true,
-            //     ajax : {
-            //         type    : 'post',
-            //         url     : '<?=base_url('member/purchase/history');?>',
-            //         dataSrc : function(datatable) { console.log(datatable);
-            //             let returnData = new Array();
-                        
-            //             if(datatable.data.length > 0) {
-            //                 for(let i=0; i<datatable.data.length; i++) {
-            //                 returnData.push({
-            //                     'tanggal_transaksi' : datatable.data[i].tanggal_transaksi
-            //                 });
-            //             }
-            //             }
-                        
-                        
-            //             return returnData;
-            //         },
-            //         error: function(e) {console.log(e.responseText);}
-            //     },
-            //     column : [
-            //         { data: 'tanggal_transaksi', title: 'Date' },
-            //     ]
-            // });
-
             table = $('#tablePurchase').DataTable({
                 scrollX : true,
                 ordering : false,
@@ -100,7 +90,7 @@
                 serverSide : true,
                 ajax : {
                     type    : 'post',
-                    url     : '<?=base_url('member/purchase/history');?>',
+                    url     : '<?=base_url('member/history/list');?>',
                     dataSrc : function(datatable) {
                         let returnData = new Array();
                         for(let i=0; i<datatable.data.length; i++) {
@@ -116,8 +106,8 @@
                         }
                         return returnData;
                     },
-                    error : function(e) { console.log(e.responseText);
-                        // window.location = "<?=base_url('admin/login');?>";
+                    error : function(e) {
+                        window.location = "<?=base_url('member/login');?>";
                     }
                 },
                 columns : [
@@ -128,18 +118,36 @@
                     { data : 'status_verifikasi', title : 'Status' },
                 ],
                 columnDefs : [
+                    { targets : 0, width : '130px', render : function(data, type, row) {
+                            if(moment(data).isValid()) {
+                                let date = moment(data, 'YYYY-MM-DD HH:mm:ss', 'id').format('D MMMM YYYY, ');
+                                let time = moment(data, 'YYYY-MM-DD HH:mm:ss', 'id').format('HH:mm');
+                                return '<span style="white-space: nowrap;">' + date + '</span>\n' + time;
+                            }
+                            else
+                                return "-";
+                        } 
+                    },
                     { targets : 2, render : function(data, type, row) {
+                            let src = '<?=base_url('course/')?>' + row.jenis_paket + '/thumbnail/' + row.thumbnail_paket;
                             return '' +
-                            '<div class="row flex-row">' +
-                                '<div class="col-12 col-sm-6 col-md-4">' +
-                                    data +
-                                '</div>' +
-                                '<div class="col-12 col-sm-6 col-md-8">' +
-                                    row.deskripsi_singkat +
-                                '</div>' +
+                            '<div class="detail-image">' +
+                                '<img src="'+src+'" style="width: 100%;">' +
+                            '</div>' +
+                            '<div class="detail-title">' +
+                                '<p style="margin: 0"><strong>' + row.nama_paket + '</strong></p>' +
+                                row.deskripsi_singkat
                             '</div>';
                         } 
-                    }
+                    },
+                    { targets : 3, render : function(data, type, row) {
+                            return currency.format(data);
+                        } 
+                    },
+                    { targets : [1, 4], render : function(data, type, row) {
+                            return data.charAt(0).toUpperCase() + data.slice(1);
+                        } 
+                    },
                 ],
             });
         });

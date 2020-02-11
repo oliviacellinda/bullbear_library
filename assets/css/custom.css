@@ -25,3 +25,23 @@
         padding-bottom: 3rem;
     }
 }
+
+.body-overlay {
+    position: fixed;
+    z-index: 99;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: none;
+    background-color: rgba(255,255,255,.8);
+}
+.body-overlay .lds-ellipsis {
+    position: absolute;
+    display: inline-block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: white;
+}
