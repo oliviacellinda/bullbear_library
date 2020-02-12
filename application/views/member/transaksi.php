@@ -42,14 +42,23 @@
 <body>
     <div id="wrapper">
         <?php $this->load->view('member/header'); ?>
-        <?php $this->load->view('member/menu'); ?>
 
-        <section class="section littlepad">
+        <section class="section">
             <div class="container">
                 <div class="section-title text-center">
                     <h4>Purchase</h4>
                     <h2>My Purchase History</h2>
                 </div>
+
+                <?php if($this->session->flashdata('alert_status')) : ?>
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="alert alert-<?=$this->session->flashdata('alert_status');?>" role="alert">
+                                <?=$this->session->flashdata('alert_info');?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
                 
                 <div class="row">
                     <div class="col-12">

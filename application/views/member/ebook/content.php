@@ -142,7 +142,7 @@
         $('#btnGateway').click(function() {
             $.ajax({
                 type    : 'post',
-                url     : '<?=base_url('member/transaction/new');?>',
+                url     : '<?=base_url('transaction/new');?>',
                 data    : { type : 'ebook', id : '<?=$ebook['id_ebook_paket'];?>' },
                 dataType: 'json',
                 beforeSend: function() {

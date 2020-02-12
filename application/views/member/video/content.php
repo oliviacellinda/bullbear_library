@@ -197,7 +197,7 @@
         $('#btnGateway').click(function() {
             $.ajax({
                 type    : 'post',
-                url     : '<?=base_url('member/transaction/new');?>',
+                url     : '<?=base_url('transaction/new');?>',
                 data    : { type : 'video', id : '<?=$video['id_video_paket'];?>' },
                 dataType: 'json',
                 beforeSend: function() {

@@ -49,6 +49,7 @@ class Model extends CI_Model {
         $this->db->where('jenis_paket', $content);
         $this->db->where('username_member', $this->session->bullbear_username_member);
         $query = $this->db->get('member_paket');
+        $list = [];
         if($query->num_rows() > 0) {
             $query = $query->result_array();
             $list = array();
@@ -56,10 +57,14 @@ class Model extends CI_Model {
                 $list[] = $element['id_paket'];
             }
         }
-
-        if($is_owner === 'true' && isset($list))
-            $this->db->where_in( ($content === 'video') ? 'id_video_paket' : 'id_ebook_paket' , $list);
-        elseif($is_owner === 'false' && isset($list))
+        
+        if($is_owner === 'true') {
+            if(count($list) > 0)
+                $this->db->where_in( ($content === 'video') ? 'id_video_paket' : 'id_ebook_paket' , $list);
+            else
+                return '';
+        }
+        elseif($is_owner === 'false' && count($list) > 0)
             $this->db->where_not_in( ($content === 'video') ? 'id_video_paket' : 'id_ebook_paket' , $list);
 
         if($search != '')
@@ -74,6 +79,7 @@ class Model extends CI_Model {
             $this->db->limit($limit);
 
         $query = $this->db->get( ($content === 'video') ? 'video_paket' : 'ebook_paket' );
+        // echo $this->db->get_compiled_select(($content === 'video') ? 'video_paket' : 'ebook_paket');
         if($query->num_rows() > 0)
             return $query->result_array();
     }
