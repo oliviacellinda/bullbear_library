@@ -68,6 +68,95 @@
 
     </div>
 
+    <div id="modalDetail" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Transaksi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    	<span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="nav-transaksi-tab" data-toggle="pill" href="#nav-transaksi" role="tab" aria-controls="nav-transaksi" aria-selected="true">Transaksi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="nav-member-tab" data-toggle="pill" href="#nav-member" role="tab" aria-controls="nav-member" aria-selected="false">Member</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="nav-paket-tab" data-toggle="pill" href="#nav-paket" role="tab" aria-controls="nav-paket" aria-selected="false">Paket</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="nav-transaksi" role="tabpanel" aria-labelledby="nav-transaksi-tab">
+                                    <div>
+                                        <h5>Invoice</h5>
+                                        <p id="invoice"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Tanggal Transaksi</h5>
+                                        <p id="tglTransaksi"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Tanggal Verifikasi</h5>
+                                        <p id="tglVerifikasi"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Total Pembelian</h5>
+                                        <p id="totalPembelian"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Status Verifikasi</h5>
+                                        <p id="statusVerifikasi"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Sumber Pembayaran</h5>
+                                        <p id="sumberPembayaran"></p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-member" role="tabpanel" aria-labelledby="nav-member-tab">
+                                    <div>
+                                        <h5>Nama Member</h5>
+                                        <p id="namaMember"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Username Member</h5>
+                                        <p id="usernameMember"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Email Member</h5>
+                                        <p id="emailMember"></p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-paket" role="tabpanel" aria-labelledby="nav-paket-tab">
+                                    <div>
+                                        <h5>Nama Paket</h5>
+                                        <p id="namaPaket"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Deskripsi Paket</h5>
+                                        <p id="deskripsiPaket"></p>
+                                    </div>
+                                    <div>
+                                        <h5>Harga Paket</h5>
+                                        <p id="hargaPaket"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="<?=base_url('assets/PurpleAdmin/vendors/js/vendor.bundle.base.js');?>"></script>
     <script src="<?=base_url('assets/PurpleAdmin/js/off-canvas.js');?>"></script>
     <script src="<?=base_url('assets/PurpleAdmin/js/hoverable-collapse.js');?>"></script>
@@ -120,18 +209,7 @@
                 ],
                 columnDefs : [
                     { targets : 0, render : function(data, type, row) {
-                            let button = '';
-                            if(row.status_verifikasi == true) {
-                                button = '<button id="btnVerifikasi" class="btn btn-sm btn-info mr-1" disabled>' +
-                                    '<i class="mdi mdi-check"></i>' +
-                                '</button>';
-                            }
-                            else {
-                                button = '<button id="btnVerifikasi" class="btn btn-sm btn-info mr-1">' +
-                                    '<i class="mdi mdi-check"></i>' +
-                                '</button>';
-                            }
-                            button += '<button id="btnDetail" class="btn btn-sm btn-primary">' +
+                            let button = '<button id="btnDetail" class="btn btn-sm btn-primary">' +
                                 '<i class="mdi mdi-information"></i>' +
                             '</button>';
                             return button;
@@ -146,7 +224,7 @@
                     },
                     { targets : 4, render : $.fn.dataTable.render.number('.', ',', 2, 'Rp ') },
                     { targets : 5, render : function(data, type, row) {
-                            return (data == true) ? 'Telah diverifikasi' : 'Menunggu verifikasi';
+                            return data.charAt(0).toUpperCase() + data.slice(1);
                         } 
                     },
                 ],
@@ -155,10 +233,50 @@
             $('#tabelTransaksi').on('click', '#btnDetail', function() {
                 let tr = $(this).parents('tr');
                 let row = tabel.row(tr).data();
-                let id = row.menu;
 
                 $.ajax({
-                    
+                    type    : 'post',
+                    url     : '<?=base_url('admin/transaksi/detail');?>',
+                    dataType: 'json',
+                    data    : { invoice : row.menu },
+                    beforeSend: function() {
+                        loading('.card');
+                    },
+                    success : function(data) { console.log(data);
+                        if(data.type == 'error') {
+                            showAlert(data);
+                        }
+                        else if(data.type == 'success') {
+                            $('#invoice').text(data.transaksi.invoice);
+                            $('#tglTransaksi').text(moment(data.transaksi.tanggal_transaksi).isValid() ? moment(data.transaksi.tanggal_transaksi, 'YYYY-MM-DD HH:mm:ss', 'id').format('D MMMM YYYY, HH:mm') : '-');
+                            $('#tglVerifikasi').text(moment(data.transaksi.tanggal_verifikasi).isValid() ? moment(data.transaksi.tanggal_verifikasi, 'YYYY-MM-DD HH:mm:ss', 'id').format('D MMMM YYYY, HH:mm') : '-');
+                            $('#totalPembelian').text(currency.format(data.transaksi.total_pembelian));
+                            $('#statusVerifikasi').text(data.transaksi.status_verifikasi.charAt(0).toUpperCase() + data.transaksi.status_verifikasi.slice(1));
+                            $('#sumberPembayaran').text(data.transaksi.sumber_pembayaran.charAt(0).toUpperCase() + data.transaksi.sumber_pembayaran.slice(1));
+                        
+                            $('#namaMember').text(data.member.nama_member);
+                            $('#usernameMember').text(data.member.username_member);
+                            $('#emailMember').text(data.member.email_member);
+
+                            if(data.paket == null) {
+                                $('#namaPaket,#deskripsiPaket,#hargaPaket').text('Data tidak ditemukan.');
+                            }
+                            else {
+                                $('#namaPaket').text(data.paket.nama_paket);
+                                $('#deskripsiPaket').text(data.paket.deskripsi_paket);
+                                $('#hargaPaket').text(currency.format(data.paket.harga_paket));
+                            }
+                            
+                            $('#nav-transaksi').tab('show');
+                            $('#modalDetail').modal('show');
+                        }
+                    },
+                    error   : function(e) {
+                        toastr('error', 'Gagal memuat data.');
+                    },
+                    complete: function() {
+                        removeLoading('.card');
+                    }
                 });
             });
         });

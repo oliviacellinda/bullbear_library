@@ -138,7 +138,7 @@
                     let formData = new FormData();
                     formData.append('nama', nama);
                     formData.append('deskripsi', deskripsi);
-                    formData.append('singkat', deskripsi);
+                    formData.append('singkat', singkat);
                     formData.append('harga', harga);
                     formData.append('link', link);
                     formData.append('thumbnail', thumbnail.files[0]);

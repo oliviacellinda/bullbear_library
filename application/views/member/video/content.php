@@ -48,10 +48,14 @@
                         <?php if(!$is_owner) : ?>
                             <h5 class="mt-4"><?='Rp '.number_format($video['harga_paket'], 2, ',', '.');?></h5>
                             <div class="mt-3">
-                                <button id="btnGateway" class="btn btn-primary">Buy and pay with Midtrans</button>
-                                <a href="<?=$video['link_video'];?>" target="_blank" rel="noopener noreferrer">
-                                    <button id="btnOutside" class="btn btn-primary mt-1 mt-lg-0">Buy from Tokopedia(?)</button>
-                                </a>
+                                <?php if($is_pending) : ?>
+                                    <p><em>Pending payment. Please wait while we are processing your payment.</em></p>
+                                <?php else : ?>
+                                    <button id="btnGateway" class="btn btn-primary">Buy and pay with Midtrans</button>
+                                    <a href="<?=$video['link_video'];?>" target="_blank" rel="noopener noreferrer">
+                                        <button id="btnOutside" class="btn btn-primary mt-1 mt-lg-0">Buy from Tokopedia(?)</button>
+                                    </a>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
                     </div>

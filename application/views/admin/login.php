@@ -5,35 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin - Login</title>
-    <link rel="stylesheet" href="<?=base_url('assets/AdminLTE-2.4.8/bower_components/bootstrap/dist/css/bootstrap.min.css');?>">
-    <link rel="stylesheet" href="<?=base_url('assets/AdminLTE-2.4.8/bower_components/font-awesome/css/font-awesome.min.css');?>">
-    <link rel="stylesheet" href="<?=base_url('assets/AdminLTE-2.4.8/dist/css/AdminLTE.min.css');?>">
-    <link rel="stylesheet" href="<?=base_url('assets/Source_Sans_Pro/font.css');?>">
+    <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/vendors/mdi/css/materialdesignicons.min.css');?>">
+    <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/vendors/css/vendor.bundle.base.css');?>">
+    <link rel="stylesheet" href="<?=base_url('assets/PurpleAdmin/css/style.css');?>">
 </head>
-<body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="login-logo">
-            <p>Bull Bear <small>Admin</small></p>
-        </div>
-        <div class="login-box-body">
-            <p class="login-box-msg">Sign In</p>
-            <form autocomplete="off">
-                <div class="form-group has-feedback" id="username">
-                    <input type="text" class="form-control" name="username_admin" placeholder="Username" required>
-                    <span class="fa fa-user form-control-feedback"></span>
+<body>
+    <div class="container-scroller">
+        <div class="container-fluid page-body-wrapper full-page-wrapper">
+            <div class="content-wrapper d-flex align-items-center auth">
+                <div class="row flex-grow">
+                    <div class="col-lg-4 mx-auto">
+                        <div class="auth-form-light text-left p-5">
+                            <div class="brand-logo">
+                                <img src="<?=base_url('assets/images/logo.png');?>">
+                            </div>
+                            <h4>Login</h4>
+                            <h6 class="font-weight-light">Sign in to continue.</h6>
+                            <form class="pt-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control form-control-lg" name="username_admin" placeholder="Username" autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control form-control-lg" name="password_admin" placeholder="Password" autocomplete="off">
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-block btn-info btn-lg font-weight-medium auth-form-btn">SIGN IN</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group has-feedback" id="password">
-                    <input type="password" class="form-control" name="password_admin" placeholder="Password" required>
-                    <span class="fa fa-lock form-control-feedback"></span>
-                </div>
-                <button id="btnLogin" class="btn btn-primary btn-block btn-flat">Masuk</button>
-            </form>
+            </div>
+            <!-- content-wrapper ends -->
         </div>
+      <!-- page-body-wrapper ends -->
     </div>
 
-    <script src="<?=base_url('assets/AdminLTE-2.4.8/bower_components/jquery/dist/jquery.min.js');?>"></script>
-    <script src="<?=base_url('assets/AdminLTE-2.4.8/bower_components/bootstrap/dist/js/bootstrap.min.js');?>"></script>
-    <script src="<?=base_url('assets/AdminLTE-2.4.8/dist/js/adminlte.min.js');?>"></script>
+    <script src="<?=base_url('assets/PurpleAdmin/vendors/js/vendor.bundle.base.js');?>"></script>
+    <script src="<?=base_url('assets/PurpleAdmin/js/off-canvas.js');?>"></script>
+    <script src="<?=base_url('assets/PurpleAdmin/js/hoverable-collapse.js');?>"></script>
+    <script src="<?=base_url('assets/PurpleAdmin/js/misc.js');?>"></script>
 
     <script>
         $(document).ready(function() {
@@ -53,8 +64,7 @@
 
             $('form').submit(function(event) {
                 event.preventDefault();
-                $('#btnLogin').html('<i class="fa fa-refresh fa-spin"></i>');
-                $('#btnLogin').addClass('disabled');
+                $('.btn').addClass('disabled');
 
                 let username = $('input[name="username_admin"]').val();
                 let password = $('input[name="password_admin"]').val();
@@ -75,8 +85,7 @@
                                 $('#username').addClass('has-error');
                                 $('#password').addClass('has-error');
                                 $('input[name="username_admin"]').focus();
-                                $('#btnLogin').html('Masuk');
-                                $('#btnLogin').removeClass('disabled');
+                                $('.btn').removeClass('disabled');
                             }
                             else if(response == 'berhasil') {
                                 window.location = '<?=base_url('admin/user')?>';

@@ -791,6 +791,9 @@ class Admin extends CI_Controller {
         elseif($param1 === 'list') {
             $this->transaksiList();
         }
+        elseif($param1 === 'detail') {
+            $this->detailTransaksi();
+        }
         elseif($param1 === 'tambah' && $param2 === 'proses') {
             $this->tambahTransaksi();
         }
@@ -804,6 +807,32 @@ class Admin extends CI_Controller {
         $query = 'SELECT `invoice`, `username_member`, `tanggal_transaksi`, `status_verifikasi`, `total_pembelian` FROM `transaksi`';
         $datatables->query($query);
         echo $datatables->generate();
+    }
+
+    private function detailTransaksi() {
+        $invoice = preg_replace('/[^a-zA-Z0-9_]/', '', $this->input->post('invoice'));
+
+        $where = array('invoice' => $invoice);
+        $transaksi = $this->model->getDataWhere('transaksi', $where);
+
+        if($transaksi == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Transaksi tidak ditemukan.';
+            echo json_encode($return);
+            die();
+        }
+
+        $where = $transaksi['jenis_paket'] === 'video' ? array('id_video_paket' => $transaksi['id_paket']) : array('id_ebook_paket' => $transaksi['id_paket']);
+        $paket = $this->model->getDataWhere($transaksi['jenis_paket'] === 'video' ? 'video_paket' : 'ebook_paket', $where);
+
+        $where = array('username_member' => $transaksi['username_member']);
+        $member = $this->model->getDataWhere('member', $where);
+
+        $return['type'] = 'success';
+        $return['transaksi'] = $transaksi;
+        $return['paket'] = $paket;
+        $return['member'] = $member;
+        echo json_encode($return);
     }
 
     private function tambahTransaksi() {
@@ -851,14 +880,15 @@ class Admin extends CI_Controller {
             }
             else {
                 $data = array(
-                    'invoice'           => "bullbear_$username" . "_$jenis[0]$paket",
+                    'invoice'           => "bullbear_$username" . "_$jenis[0]$paket" . date('YmdHis'),
                     'username_member'   => $username,
                     'id_paket'          => $paket,
                     'jenis_paket'       => $jenis,
                     'tanggal_transaksi' => date('Y-m-d H:i:s'),
                     'tanggal_verifikasi'=> date('Y-m-d H:i:s'),
-                    'status_verifikasi' => 1,
-                    'total_pembelian'   => $informasi_paket['harga_paket']
+                    'status_verifikasi' => 'verified',
+                    'total_pembelian'   => $informasi_paket['harga_paket'],
+                    'sumber_pembayaran' => 'manual',
                 );
                 $this->model->insertData('transaksi', $data);
 

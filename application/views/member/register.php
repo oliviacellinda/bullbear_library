@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
+    <title>Register</title>
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/bootstrap.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/font-awesome.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/all.css');?>">
@@ -30,23 +30,6 @@
         .form-control::placeholder {
             color: #999999 !important;
         }
-        .divider {
-            width: 100%;
-            margin: .7em auto;
-            overflow: hidden;
-            text-align: center;
-        }
-        .divider:before, .divider:after {
-            content: '';
-            display: inline-block;
-            border-bottom: 1px solid #131313;
-            vertical-align: middle;
-            width: 50%;
-            margin: 0 .5em 0 -50%;
-        }
-        .divider:after {
-            margin: 0 -50% 0 .5em;
-        }
     </style>
 </head>
 <body>
@@ -58,8 +41,8 @@
                         <div class="mb-5">
                             <img src="<?=base_url('assets/images/logo.png');?>" width="150px">
                         </div>
-                        <h5 class="mb-1">Login</h5>
-                        <p>Sign in to continue.</p>
+                        <h5 class="mb-1">Register</h5>
+                        <p>Sign up as new member.</p>
                         <form autocomplete="off">
                             <div class="form-group">
                                 <input type="text" class="form-control form-control-lg rounded-0" name="username_member" placeholder="Username">
@@ -68,13 +51,15 @@
                                 <input type="password" class="form-control form-control-lg rounded-0" name="password_member" placeholder="Password">
                             </div>
                             <div class="form-group">
-                                <button id="btnLogin" class="btn btn-block btn-primary btn-lg rounded-0">SIGN IN</button>
+                                <input type="email" class="form-control form-control-lg rounded-0" name="email_member" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control form-control-lg rounded-0" name="nama_member" placeholder="Name">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-block btn-primary btn-lg rounded-0">SIGN UP</button>
                             </div>
                         </form>
-                        <h6 class="divider">OR</h6>
-                        <a href="<?=base_url('member/register');?>">
-                            <button class="btn btn-block btn-success btn-lg rounded-0">SIGN UP</button>
-                        </a>
                     </div>
                 </div>
             </div>
@@ -91,15 +76,11 @@
             $('input[name="username_member"]').focus();
 
             $('input[name="username_member"]').keypress(function(event) {
-                $(this).removeClass('has-error');
-                if(event.keyCode === 13) {
-                    event.preventDefault();
-                    $('input[name="password_member"]').focus();
-                }
+                $('#username').removeClass('has-error');
             });
 
             $('input[name="password_member"]').keypress(function(event) {
-                $(this).removeClass('has-error');
+                $('#password').removeClass('has-error');
             });
 
             $('form').submit(function(event) {
@@ -123,8 +104,10 @@
                             if(response == 'username tidak ada' || response == 'password salah') {
                                 $('.help-block').remove();
                                 $('form').append('<span class="help-block" style="color:#a94442">Username atau password Anda salah!</span>');
+                                $('#username').addClass('has-error');
+                                $('#password').addClass('has-error');
                                 $('input[name="username_member"]').focus();
-                                $('#btnLogin').html('SIGN IN');
+                                $('#btnLogin').html('Masuk');
                                 $('#btnLogin').removeClass('disabled');
                             }
                             else if(response == 'berhasil') {
