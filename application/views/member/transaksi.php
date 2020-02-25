@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Purchase History</title>
@@ -50,11 +50,11 @@
                     <h2>My Purchase History</h2>
                 </div>
 
-                <?php if($this->session->flashdata('alert_status')) : ?>
+                <?php if($this->session->alert_status) : ?>
                     <div class="row mb-4">
                         <div class="col-12">
-                            <div class="alert alert-<?=$this->session->flashdata('alert_status');?>" role="alert">
-                                <?=$this->session->flashdata('alert_info');?>
+                            <div class="alert alert-<?=$this->session->alert_status;?>" role="alert">
+                                <?=$this->session->alert_info;?>
                             </div>
                         </div>
                     </div>

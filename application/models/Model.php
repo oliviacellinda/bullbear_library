@@ -92,4 +92,16 @@ class Model extends CI_Model {
         if($query->num_rows() > 0)
             return $query->result_array();
     }
+    
+    public function insertNewLibrary($username, $jenis, $id) {
+        // INSERT INTO table_listnames (name, address, tele)
+        // SELECT * FROM (SELECT 'Rupert', 'Somewhere', '022') AS tmp
+        // WHERE NOT EXISTS (
+        //     SELECT name FROM table_listnames WHERE name = 'Rupert'
+        // ) LIMIT 1;
+        $query = "INSERT INTO member_paket (username_member, jenis_paket, id_paket) ";
+        $query .= "SELECT * FROM (SELECT '".$username."', '".$jenis."', '".$id."') AS temp ";
+        $query .= "WHERE NOT EXISTS(SELECT * FROM member_paket WHERE username_member = '".$username."' AND jenis_paket = '".$jenis."' AND id_paket = '".$id."') LIMIT 1";
+        $this->db->query($query);
+    }
 }

@@ -75,42 +75,36 @@
         $(document).ready(function() {
             $('input[name="username_member"]').focus();
 
-            $('input[name="username_member"]').keypress(function(event) {
-                $('#username').removeClass('has-error');
-            });
-
-            $('input[name="password_member"]').keypress(function(event) {
-                $('#password').removeClass('has-error');
-            });
-
             $('form').submit(function(event) {
                 event.preventDefault();
-                $('#btnLogin').html('<i class="fa fa-refresh fa-spin"></i>');
-                $('#btnLogin').addClass('disabled');
+                $('#btnRegister').html('<i class="fa fa-refresh fa-spin"></i>');
+                $('#btnRegister').addClass('disabled');
 
-                let username = $('input[name="username_member"]').val();
-                let password = $('input[name="password_member"]').val();
+                let username = $('input[name="username_member"]').val().trim();
+                let password = $('input[name="password_member"]').val().trim();
+                let email = $('input[name="email_member"]').val().trim();
+                let nama = $('input[name="nama_member"]').val().trim();
 
                 if(username != '' && password != '') {
                     $.ajax({
                         type    : 'post',
-                        url     : '<?=base_url('member/prosesLogin');?>',
+                        url     : '<?=base_url('member/prosesRegister');?>',
                         dataType: 'json',
                         data    : {
                             username : username,
-                            password : password
+                            password : password,
+                            email    : email,
+                            nama     : nama
                         },
                         success : function(response) {
-                            if(response == 'username tidak ada' || response == 'password salah') {
+                            if(response.type == 'error') {
                                 $('.help-block').remove();
-                                $('form').append('<span class="help-block" style="color:#a94442">Username atau password Anda salah!</span>');
-                                $('#username').addClass('has-error');
-                                $('#password').addClass('has-error');
+                                $('form').append('<span class="help-block" style="color:#a94442">'+response.message+'</span>');
                                 $('input[name="username_member"]').focus();
-                                $('#btnLogin').html('Masuk');
-                                $('#btnLogin').removeClass('disabled');
+                                $('#btnRegister').html('SIGN UP');
+                                $('#btnRegister').removeClass('disabled');
                             }
-                            else if(response == 'berhasil') {
+                            else if(response.type == 'success') {
                                 window.location = '<?=base_url('member/home')?>';
                             }
                         },

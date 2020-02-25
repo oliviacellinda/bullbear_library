@@ -39,17 +39,94 @@ class Member extends CI_Controller {
         $informasi_member = $this->model->getDataWhere('member', $where);
 
         if($informasi_member == '') {
-            echo json_encode('username tidak ada');
+            echo json_encode('username not found');
             die();
         }
         elseif(!password_verify($password, $informasi_member['password_member'])) {
-            echo json_encode('password salah');
+            echo json_encode('password is wrong');
             die();
         }
         else {
             $this->session->set_userdata('bullbear_username_member', $informasi_member['username_member']);
-            echo json_encode('berhasil');
+            echo json_encode('success');
         }
+    }
+
+    public function prosesRegister() {
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $email = $this->input->post('email');
+        $nama = $this->input->post('nama');
+
+        if($username == '' || $password == '' || $email == '' || $nama == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data is not complete.';
+            echo json_encode($return);
+            die();
+        }
+
+        if(!ctype_alnum($username)) {
+            $return['type'] = 'error';
+            $return['message'] = 'Username can only contain letters and numbers.';
+            echo json_encode($return);
+            die();
+        }
+
+        if(strlen($password) < 8) {
+            $return['type'] = 'error';
+            $return['message'] = 'The minimum length of password is 8 characters.';
+            echo json_encode($return);
+            die();
+        }
+
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $return['type'] = 'error';
+            $return['message'] = 'Invalid email format.';
+            echo json_encode($return);
+            die();
+        }
+
+        if (!preg_match("/^[a-zA-Z ]/", $nama)) {
+            $return['type'] = 'error';
+            $return['message'] = 'Name can only contain letters and white space.';
+            echo json_encode($return);
+            die();
+        }
+
+        $username = trim($username);
+        $password = trim($password);
+        $email = trim($email);
+        $nama = trim($nama);
+
+        $where = array('username_member' => $username);
+        $informasi_member = $this->model->getDataWhere('member', $where);
+        if($informasi_member != '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Username is already used.';
+            echo json_encode($return);
+            die();
+        }
+
+        $where = array('email_member' => $email);
+        $informasi_member = $this->model->getDataWhere('member', $where);
+        if($informasi_member != '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Email is already used.';
+            echo json_encode($return);
+            die();
+        }
+
+        $data = array(
+            'username_member'   => $username,
+            'password_member'   => password_hash($password, PASSWORD_DEFAULT),
+            'nama_member'       => $nama,
+            'email_member'      => $email,
+        );
+        $this->model->insertData('member', $data);
+
+        $this->session->set_userdata('bullbear_username_member', $username);
+        $return['type'] = 'success';
+        echo json_encode($return);
     }
 
     public function logout() {

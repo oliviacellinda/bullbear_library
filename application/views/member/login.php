@@ -120,14 +120,14 @@
                             password : password
                         },
                         success : function(response) {
-                            if(response == 'username tidak ada' || response == 'password salah') {
+                            if(response == 'username not found' || response == 'password is wrong') {
                                 $('.help-block').remove();
-                                $('form').append('<span class="help-block" style="color:#a94442">Username atau password Anda salah!</span>');
+                                $('form').append('<span class="help-block" style="color:#a94442">Username or password is wrong!</span>');
                                 $('input[name="username_member"]').focus();
                                 $('#btnLogin').html('SIGN IN');
                                 $('#btnLogin').removeClass('disabled');
                             }
-                            else if(response == 'berhasil') {
+                            else if(response == 'success') {
                                 window.location = '<?=base_url('member/home')?>';
                             }
                         },
