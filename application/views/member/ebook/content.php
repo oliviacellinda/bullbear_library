@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Ebook Content</title>
@@ -11,21 +11,13 @@
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/style.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/responsive.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/colors.css');?>">
+    <link rel="stylesheet" href="<?=base_url('assets/toastr/toastr.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/lds-ellipsis.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/custom.css');?>">
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <style>
-        .duration::before {
-            content: " (";
-            white-space: pre;
-        }
-        .duration::after {
-            content: ')';
-        }
-    </style>
 </head>
 <body>
     <div id="wrapper">
@@ -49,8 +41,8 @@
                                     <p><em>Pending payment. Please wait while we are processing your payment.</em></p>
                                 <?php else : ?>
                                     <button id="btnGateway" class="btn btn-primary">Buy and pay with Midtrans</button>
-                                    <a href="<?=$ebook['link_ebook'];?>" target="_blank" rel="noopener noreferrer">
-                                        <button id="btnOutside" class="btn btn-primary mt-1 mt-lg-0">Buy from Tokopedia(?)</button>
+                                    <a href="http://<?=$ebook['link_ebook'];?>" target="_blank" rel="noopener noreferrer">
+                                        <button id="btnOutside" class="btn btn-primary mt-1 mt-lg-0">Buy from Tokopedia</button>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -77,9 +69,11 @@
                                                 <td ><?=$i+1;?></td>
                                                 <td class="text-left"><?=$content[$i]['nama_ebook'];?></td>
                                                 <td>
-                                                    <button class="btn btn-success btn-read" style="font-size: inherit;" data-id="<?=$content[$i]['id_ebook'];?>">
-                                                        Read
-                                                    </button>
+                                                    <a href="<?=$content[$i]['url'];?>" target="_blank">
+                                                        <button class="btn btn-success btn-read" style="font-size: inherit;" data-id="<?=$content[$i]['id_ebook'];?>">
+                                                            Read
+                                                        </button>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         <?php endfor; ?>
@@ -129,18 +123,9 @@
     <script src="<?=base_url('assets/micrology-master/js/bootstrap.min.js');?>"></script>
     <script src="<?=base_url('assets/micrology-master/js/all.js');?>"></script>
     <script src="<?=base_url('assets/micrology-master/js/custom.js');?>"></script>
+    <script src="<?=base_url('assets/toastr/toastr.min.js');?>"></script>
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
-
-    <?php if($is_owner) : ?>
-        <script>
-            $('.btn-read').click(function() {
-                let id = $(this).data('id');
-                
-            });
-
-        </script>
-    <?php endif;?>
 
     <script>
         $('#btnGateway').click(function() {

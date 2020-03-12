@@ -154,6 +154,48 @@ class Member extends CI_Controller {
             $this->load->view('member/home');
         }
     }
+    
+    public function changePassword() {
+        $lama = $this->input->post('password_lama');
+        $baru = $this->input->post('password_baru');
+        $konfirmasi = $this->input->post('konfirmasi_password');
+        
+        if($lama == '' || $baru == '' || $konfirmasi == '') {
+            $return['type'] = 'error';
+            $return['message'] = 'Data required is not complete.';
+            echo json_encode($return);
+            die();
+        }
+        elseif(strlen($baru) < 8) {
+            $return['type'] = 'error';
+            $return['message'] = 'The minimum length of password is 8 characters.';
+            echo json_encode($return);
+            die();
+        }
+        elseif($konfirmasi != $baru) {
+            $return['type'] = 'error';
+            $return['message'] = 'Confirmation password does not match.';
+            echo json_encode($return);
+            die();
+        }
+        
+        $where = array('username_member' => $this->session->bullbear_username_member);
+        $informasi_member = $this->model->getDataWhere('member', $where);
+        
+        if(!password_verify($lama, $informasi_member['password_member'])) {
+            $return['type'] = 'error';
+            $return['message'] = 'Wrong password.';
+            echo json_encode($return);
+            die();
+        }
+        
+        $data = array('password_member' => password_hash($baru, PASSWORD_DEFAULT));
+        $this->model->updateData('member', $where, $data);
+        
+        $return['type'] = 'success';
+        $return['message'] = 'Successfully changed password.';
+        echo json_encode($return);
+    }
 
 
     /*--------------------------------------------------
@@ -280,6 +322,10 @@ class Member extends CI_Controller {
         $data['ebook'] = $this->model->getDataWhere('ebook_paket', $where);
         $data['content'] = $this->model->getAllDataWhere('ebook_isi', $where);
         
+        for($i=0; $i<count($data['content']); $i++) {
+            $data['content'][$i]['url'] = base_url('member/content/ebook/') . $data['content'][$i]['id_ebook_paket'] . '/' . $data['content'][$i]['id_ebook'];
+        }
+        
         $where = array('username_member' => $this->session->bullbear_username_member, 'jenis_paket' => 'ebook', 'id_paket' => $id);
         $data['is_owner'] = ($this->model->getDataWhere('member_paket', $where) == '') ? false : true;
         
@@ -293,6 +339,35 @@ class Member extends CI_Controller {
             $this->load->view('member/ebook/content', $data);
         }
     }
+
+    
+    /*--------------------------------------------------
+    | [CON] Content
+    | -------------------------------------------------- */
+    
+    public function content($jenis, $paket, $id) {
+        if(!$this->isLogin() || $jenis != 'ebook' || empty($paket) || empty($id)) {
+            redirect(base_url('login'));
+        }
+        
+        $paket = preg_replace('/[^0-9]/', '', $paket);
+        $id = preg_replace('/[^0-9]/', '', $id);
+        
+        $data['url'] = base_url('member/pdf/') . $paket . '/' . $id;
+        
+        $this->load->view('member/ebook/viewer', $data);
+    }
+    
+    public function pdf($paket, $id) {
+        $where = array('id_ebook_paket' => $paket, 'id_ebook' => $id);
+        $ebook = $this->model->getDataWhere('ebook_isi', $where);
+        
+        $path = base_url('course/ebook/content/') . $ebook['id_ebook_paket'] . '/' .  $ebook['file_ebook'];
+        
+        $file = chunk_split(base64_encode(file_get_contents($path)));
+        echo $file;
+    }
+    
 
     /*--------------------------------------------------
     | [HIS] History

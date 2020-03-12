@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Purchase History</title>
@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/responsive.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/colors.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/datatable/DataTables-1.10.20/css/dataTables.bootstrap4.min.css');?>">
+    <link rel="stylesheet" href="<?=base_url('assets/toastr/toastr.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/lds-ellipsis.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/custom.css');?>">
     <!--[if lt IE 9]>
@@ -83,6 +84,7 @@
     <script src="<?=base_url('assets/datatable/DataTables-1.10.20/js/jquery.dataTables.min.js');?>"></script>
     <script src="<?=base_url('assets/datatable/DataTables-1.10.20/js/dataTables.bootstrap4.min.js');?>"></script>
     <script src="<?=base_url('assets/moment/min/moment-with-locales.min.js');?>"></script>
+    <script src="<?=base_url('assets/toastr/toastr.min.js');?>"></script>
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
 

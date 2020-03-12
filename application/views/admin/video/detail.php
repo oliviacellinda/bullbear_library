@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Manajemen Video - Admin</title>
@@ -147,6 +147,12 @@
                                     <input type="file" accept="video/*" id="upload" name="upload">
                                 </div>
                             </form>
+                            <div id="progress" style="display: none;">
+                                <p></p>
+                                <div class="progress" style="height: 15px;">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -314,25 +320,42 @@
                     // resolve callback
                     formData.append('durasi', result);
                     $.ajax({
+                        xhr     : function() {
+                            let xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener('progress', function(e) {
+                                if(e.lengthComputable) {
+                                    let percent = Math.round((e.loaded / e.total) * 100);
+                                    $('.progress-bar').attr('aria-valuenow', percent).css('width', percent + '%');
+                                    if(percent == 100) {
+                                        $('#progress p').text('Processing file...');
+                                    }
+                                }
+                            });
+                            return xhr;
+                        },
                         type    : 'post',
                         url     : '<?=base_url('admin/video/isi/tambah');?>',
                         dataType: 'json',
                         data    : formData,
-                        contentType: false,
-                        processData: false,
+                        contentType : false,
+                        processData : false,
                         beforeSend: function() {
-                            loading('.modal-body');
+                            // loading('.modal-body');
+                            $('#progress').show();
+                            $('#progress p').text('Uploading files...');
                             $('.modal-footer button').prop('disabled', true);
                         },
                         success : function(data) {
                             showAlert(data);
                         },
-                        error   : function(e) {
+                        error   : function(e) { console.log(e.responseText);
                             toastr.error('Gagal menyimpan data.', 'Error!');
                         },
                         complete: function() {
                             $('#formVideo').trigger('reset');
-                            removeLoading('.modal-body');
+                            // removeLoading('.modal-body');
+                            $('#progress').hide();
+                            $('#progress p').text('');
                             $('.modal-footer button').prop('disabled', false);
                             $('#modalVideo').modal('hide');
                             loadVideo();

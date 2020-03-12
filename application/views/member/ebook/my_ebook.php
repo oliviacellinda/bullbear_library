@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>My E-Books</title>
@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/style.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/responsive.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/micrology-master/css/colors.css');?>">
+    <link rel="stylesheet" href="<?=base_url('assets/toastr/toastr.min.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/lds-ellipsis.css');?>">
     <link rel="stylesheet" href="<?=base_url('assets/css/custom.css');?>">
     <!--[if lt IE 9]>
@@ -44,6 +45,7 @@
     <script src="<?=base_url('assets/micrology-master/js/bootstrap.min.js');?>"></script>
     <script src="<?=base_url('assets/micrology-master/js/all.js');?>"></script>
     <script src="<?=base_url('assets/micrology-master/js/custom.js');?>"></script>
+    <script src="<?=base_url('assets/toastr/toastr.min.js');?>"></script>
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
 

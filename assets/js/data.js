@@ -34,7 +34,7 @@ function loadVideo(template, sort = 'asc', limit = 'all', search = '', is_owner 
                     temp = $.parseHTML(temp);
                     $(temp).find('#thumbnail').attr('src', data[i].thumbnail_paket);
                     $(temp).find('#title a').text(data[i].nama_paket);
-                    $(temp).find('#title a').prop('href', 'video/content/' + data[i].id_video_paket);
+                    $(temp).find('#title a').prop('href', base_url.member + 'video/content/' + data[i].id_video_paket);
                     $(temp).find('#description').text(data[i].deskripsi_singkat);
                     $(temp).find('#price').text(currency.format(data[i].harga_paket));
 
@@ -92,7 +92,7 @@ function loadEbook(template, sort = 'asc', limit = 'all', search = '', is_owner 
                     temp = $.parseHTML(temp);
                     $(temp).find('#thumbnail').attr('src', data[i].thumbnail_paket);
                     $(temp).find('#title a').text(data[i].nama_paket);
-                    $(temp).find('#title a').prop('href', 'ebook/content/' + data[i].id_ebook_paket);
+                    $(temp).find('#title a').prop('href', base_url.member + 'ebook/content/' + data[i].id_ebook_paket);
                     $(temp).find('#description').text(data[i].deskripsi_singkat);
                     $(temp).find('#price').text(currency.format(data[i].harga_paket));
 

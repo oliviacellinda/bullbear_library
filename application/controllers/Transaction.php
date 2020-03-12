@@ -4,6 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Transaction extends CI_Controller {
     
     private static $server_key = 'SB-Mid-server-q94LeQBlRu0MMd4cp6fYVzUC';
+    // private static $server_key = 'SB-Mid-server-GPy6lkmRvWDJkcTgUTbdfYIS';
 
     public function __construct() {
         parent::__construct();
@@ -166,7 +167,7 @@ class Transaction extends CI_Controller {
                     
                     // $this->model->insertData('member_paket', $new);
                     // $this->model->insertNewLibrary($_SESSION['transaksi']['username_member'], $_SESSION['transaksi']['jenis_paket'], $_SESSION['transaksi']['id_paket']);
-                    $this->model->insertNewLibrary(get_cookie('username_member'), get_cookie('jenis_member'), get_cookie('id_paket'));
+                    $this->model->insertNewLibrary(get_cookie('username_member'), get_cookie('jenis_paket'), get_cookie('id_paket'));
                 }
                 elseif($verify->status_code == 201) {
                     $status = 'pending';
@@ -218,8 +219,17 @@ class Transaction extends CI_Controller {
             $this->session->set_userdata('alert_info', 'An error occured during payment process.');
         }
         
-        $this->session->unset_userdata('transaksi');
+        // $this->session->unset_userdata('transaksi');
+        delete_cookie('invoice');
+        delete_cookie('username_member');
+        delete_cookie('id_paket');
+        delete_cookie('jenis_paket');
+        delete_cookie('total_pembelian');
+        
         $this->load->view('member/transaksi');
+        
+        $this->session->unset_userdata('alert_status');
+        $this->session->unset_userdata('alert_info');
     }
 
     public function notification() {
