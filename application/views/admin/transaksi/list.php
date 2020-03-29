@@ -272,7 +272,7 @@
                         }
                     },
                     error   : function(e) {
-                        toastr('error', 'Gagal memuat data.');
+                        toastr.error('Gagal memuat data.', 'Error!');
                     },
                     complete: function() {
                         removeLoading('.card');
