@@ -354,8 +354,18 @@ class Member extends CI_Controller {
         $id = preg_replace('/[^0-9]/', '', $id);
         
         $data['url'] = base_url('member/pdf/') . $paket . '/' . $id;
+
+        $where = array('id_ebook_paket' => $paket, 'id_ebook' => $id);
+        $ebook = $this->model->getDataWhere('ebook_isi', $where);
+
+        if($ebook == '') {
+            redirect(base_url('login'));
+        }
+        else {
+            $data['file'] = base_url('course/ebook/content/') . $ebook['id_ebook_paket'] . '/' .  $ebook['file_ebook'];
         
-        $this->load->view('member/ebook/viewer', $data);
+            $this->load->view('member/ebook/viewer', $data);
+        }
     }
     
     public function pdf($paket, $id) {

@@ -29,14 +29,7 @@
     <!--    <div id="viewport" role="main"></div>-->
     <!--</div>-->
     
-    <!--<iframe-->
-    <!--src="<?=base_url('course/ebook/content/example.pdf');?>"-->
-    <!--width="100%"-->
-    <!--height="100%"-->
-    <!--style="border: none;"-->
-    <!--download="no" />-->
-    
-    <embed src="<?=base_url('course/ebook/content/example.pdf#toolbar=0&navpanes=0&scrollbar=0');?>" type="application/pdf" width="100%" height="100%" />
+    <embed src="<?=$file.'#toolbar=0&navpanes=0&scrollbar=0';?>" type="application/pdf" width="100%" height="100%" />
 
     <script src="<?=base_url('assets/micrology-master/js/jquery.min.js');?>"></script>
     <script src="<?=base_url('assets/micrology-master/js/bootstrap.min.js');?>"></script>
