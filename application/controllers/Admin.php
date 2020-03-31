@@ -922,7 +922,7 @@ class Admin extends CI_Controller {
             }
             else {
                 $data = array(
-                    'invoice'           => "bullbear_$username" . "_$jenis[0]$paket" . date('YmdHis'),
+                    'invoice'           => "bullbear_$username" . "_$jenis[0]$paket" . "_" . date('YmdHis'),
                     'username_member'   => $username,
                     'id_paket'          => $paket,
                     'jenis_paket'       => $jenis,
