@@ -42,7 +42,7 @@
                                 <?php else : ?>
                                     <button id="btnGateway" class="btn btn-primary">Buy and pay with Midtrans</button>
                                     <a href="http://<?=$ebook['link_ebook'];?>" target="_blank" rel="noopener noreferrer">
-                                        <button id="btnOutside" class="btn btn-primary mt-1 mt-lg-0">Buy from Tokopedia</button>
+                                        <button id="btnOutside" class="btn btn-primary mt-1 mt-md-0">Buy from Tokopedia</button>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -127,33 +127,36 @@
     <script src="<?=base_url('assets/js/function.js');?>"></script>
     <script src="<?=base_url('assets/js/data.js');?>"></script>
 
-    <script>
-        $('#btnGateway').click(function() {
-            $.ajax({
-                type    : 'post',
-                url     : '<?=base_url('transaction/new');?>',
-                data    : { type : 'ebook', id : '<?=$ebook['id_ebook_paket'];?>' },
-                dataType: 'json',
-                beforeSend: function() {
-                    $('.body-overlay').show();
-                },
-                success : function(response) {
-                    if(response.type == 'success') {
-                        window.location = response.redirect_url;
+    <?php if(!$is_owner) : ?>
+        <script>
+            $('#btnGateway').click(function() {
+                $.ajax({
+                    type    : 'post',
+                    url     : '<?=base_url('transaction/new');?>',
+                    data    : { type : 'ebook', id : '<?=$ebook['id_ebook_paket'];?>' },
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('.body-overlay').show();
+                    },
+                    success : function(response) {
+                        if(response.type == 'success') {
+                            window.location = response.redirect_url;
+                        }
+                        else {
+                            showAlert(response);
+                        }
+                    },
+                    error   : function(response) {
+                        console.log(response.responseText);
+                        toastr.error('Internal server error.', 'Error!');
+                    },
+                    complete : function() {
+                        $('.body-overlay').hide();
                     }
-                    else {
-                        showAlert(response);
-                    }
-                },
-                error   : function(response) {
-                    console.log(response.responseText);
-                    toastr.error('Internal server error.', 'Error!');
-                },
-                complete : function() {
-                    $('.body-overlay').hide();
-                }
+                });
             });
-        });
-    </script>
+        </script>
+    <?php endif; ?>
+    
 </body>
 </html>

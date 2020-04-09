@@ -53,7 +53,7 @@
                                 <?php else : ?>
                                     <button id="btnGateway" class="btn btn-primary">Buy and pay with Midtrans</button>
                                     <a href="http://<?=$video['link_video'];?>" target="_blank" rel="noopener noreferrer">
-                                        <button id="btnOutside" class="btn btn-primary mt-1 mt-lg-0">Buy from Tokopedia</button>
+                                        <button id="btnOutside" class="btn btn-primary mt-1 mt-md-0">Buy from Tokopedia</button>
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -69,77 +69,59 @@
                     <h2>Content</h2>
                 </div>
 
-                <?php if($is_owner) : ?>
-                    <div class="row d-none d-md-flex">
-                        <?php if($content != '') : ?>
-                            <div class="col-12 col-md-4">
-                                <ul class="list-group">
-                                    <?php for($i=0; $i<count($content); $i++) : ?>
-                                        <button class="list-group-item list-group-item-action" style="font-family: inherit;">
-                                            <?=$content[$i]['nama_video'];?>
-                                            <span class="duration"><?=$content[$i]['durasi_video'];?></span>
-                                            <span class="id-video d-none"><?=$content[$i]['id_video'];?></span>
-                                            <span class="file-video d-none"><?=$content[$i]['file_video'];?></span>
-                                        </button>
-                                    <?php endfor; ?>
-                                </ul>
-                            </div>
-                        <?php else : ?>
-                            <div class="col-12 text-center">
-                                <span>No data.</span>
-                            </div>
-                        <?php endif; ?>
-                        <div class="col-12 col-md-8">
-                            <video id="player-desktop" class="video-js vjs-fluid vjs-theme-fantasy" oncontextmenu="return false;" controls preload="none" data-setup="{}">
-                                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
-                            </video>
-                        </div>
-                    </div>
+                <?php if($content != '') : ?>
 
-                    <div class="row d-block d-md-none">
-                        <div class="col-12">
-                            <video id="player-mobile" class="video-js vjs-fluid vjs-theme-fantasy" oncontextmenu="return false;" controls preload="none" data-setup="{}">
-                                <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
-                            </video>
+                    <?php if($is_owner) : ?>
+                        <div class="row">
+                            <div class="col-md-4 d-none d-md-block">
+                                <div class="list-group">
+                                    <?php for($i=0; $i<count($content); $i++) : ?>
+                                        <button type="button" class="list-group-item list-group-item-action" data-id="<?=$content[$i]['id_video'];?>" data-file="<?=$content[$i]['file_video'];?>">
+                                            <?=$content[$i]['nama_video'];?>
+                                            <span class="duration"><?=$content[$i]['durasi_video'];?></span>
+                                        </button>
+                                    <?php endfor; ?>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <video id="player" class="video-js vjs-fluid vjs-theme-fantasy" oncontextmenu="return false;" controls preload="none" data-setup="{}">
+                                    <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that supports HTML5 video</p>
+                                </video>
+                            </div>
+                            <div class="col-12 d-block d-md-none mt-3">
+                                <div class="list-group">
+                                    <?php for($i=0; $i<count($content); $i++) : ?>
+                                        <button type="button" class="list-group-item list-group-item-action" data-id="<?=$content[$i]['id_video'];?>" data-file="<?=$content[$i]['file_video'];?>">
+                                            <?=$content[$i]['nama_video'];?>
+                                            <span class="duration"><?=$content[$i]['durasi_video'];?></span>
+                                        </button>
+                                    <?php endfor; ?>
+                                </div>
+                            </div>
                         </div>
-                        <?php if($content != '') : ?>
-                            <div class="col-12 mt-3">
-                                <ul class="list-group">
+
+                    <?php else : ?>
+                        <div class="row">
+                            <div class="col-12 col-sm-10 col-md-8 mx-auto">
+                                <div class="list-group">
                                     <?php for($i=0; $i<count($content); $i++) : ?>
-                                        <button class="list-group-item list-group-item-action" style="font-family: inherit;">
+                                        <button type="button" class="list-group-item list-group-item-action">
                                             <?=$content[$i]['nama_video'];?>
                                             <span class="duration"><?=$content[$i]['durasi_video'];?></span>
-                                            <span class="id-video d-none"><?=$content[$i]['id_video'];?></span>
-                                            <span class="file-video d-none"><?=$content[$i]['file_video'];?></span>
                                         </button>
                                     <?php endfor; ?>
-                                </ul>
+                                </div>
                             </div>
-                        <?php else : ?>
-                            <div class="col-12 text-center">
-                                <span>No data.</span>
-                            </div>
-                        <?php endif; ?>
-                    </div>
+                        </div>
+
+                    <?php endif; ?>
+
                 <?php else : ?>
-                    <div class="row justify-content-sm-center">
-                        <?php if($content != '') : ?>
-                            <div class="col-12 col-sm-10 col-md-8 text-center">
-                                <ul class="list-group">
-                                    <?php for($i=0; $i<count($content); $i++) : ?>
-                                        <button class="list-group-item list-group-item-action" style="font-family: inherit;">
-                                            <?=$content[$i]['nama_video'];?>
-                                            <span class="duration"><?=$content[$i]['durasi_video'];?></span>
-                                        </button>
-                                    <?php endfor; ?>
-                                </ul>
-                            </div>
-                        <?php else : ?>
-                            <div class="col-12 text-center">
-                                <span>No data.</span>
-                            </div>
-                        <?php endif; ?>
+
+                    <div class="col-12 text-center">
+                        <span>No data.</span>
                     </div>
+                
                 <?php endif; ?>
 
             </div>
@@ -163,67 +145,70 @@
 
     <?php if($is_owner) : ?>
         <script>
-            var id = <?=$video['id_video_paket'];?>;
-            var playerDesktop = videojs('player-desktop');
-            var playerMobile = videojs('player-mobile');
+            var uri = window.location.href.split('/');
+            var player = videojs('player');
 
             function loadVideo(data) {
-                $('.list-group-item').removeClass('active'); console.log(data);
-                data.container.addClass('active');
-                playerDesktop.src([
-                    {type: 'video/mp4', src: base_url.index + 'course/video/content/' + id + '/' + data.video}
-                ]);
-                playerMobile.src([
-                    {type: 'video/mp4', src: base_url.index + 'course/video/content/' + id + '/' + data.video}
+                $('.list-group-item').removeClass('active');
+                $('.list-group').each(function() {
+                    $(this).find('.list-group-item').eq(data.index).addClass('active');
+                });
+                player.src([
+                    {type: 'video/mp4', src: base_url.index + 'course/video/content/' + uri[uri.length-1] + '/' + data.file}
                 ]);
             }
 
-            $(window).ready(function() {
+            function markFirst() {
                 let first = new Object();
-                first.container = $('.list-group-item:first');
-                first.id = $('.list-group-item:first').find('.id-video').text();
-                first.video = $('.list-group-item:first').find('.file-video').text();
+                first.id = $('.list-group-item:first').data('id');
+                first.file = $('.list-group-item:first').data('file');
+                first.index = 0;
                 loadVideo(first);
+            }
 
-                $('.list-group-item').click(function() {
+            $(document).ready(function() {
+                markFirst();
+
+                $('.list-group').on('click', '.list-group-item', function() {
                     let data = new Object();
-                    data.container = $(this);
-                    data.id = $(this).find('.id-video').text();
-                    data.video = $(this).find('.file-video').text();
+                    data.id = $(this).data('id');
+                    data.file = $(this).data('file');
+                    data.index = $(this).index();
                     loadVideo(data);
                 });
             });
-
         </script>
-    <?php endif;?>
 
-    <script>
-        $('#btnGateway').click(function() {
-            $.ajax({
-                type    : 'post',
-                url     : '<?=base_url('transaction/new');?>',
-                data    : { type : 'video', id : '<?=$video['id_video_paket'];?>' },
-                dataType: 'json',
-                beforeSend: function() {
-                    $('.body-overlay').show();
-                },
-                success : function(response) {
-                    if(response.type == 'success') {
-                        window.location = response.redirect_url;
+    <?php else : ?>
+        <script>
+            $('#btnGateway').click(function() {
+                $.ajax({
+                    type    : 'post',
+                    url     : '<?=base_url('transaction/new');?>',
+                    data    : { type : 'video', id : '<?=$video['id_video_paket'];?>' },
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('.body-overlay').show();
+                    },
+                    success : function(response) {
+                        if(response.type == 'success') {
+                            window.location = response.redirect_url;
+                        }
+                        else {
+                            showAlert(response);
+                        }
+                    },
+                    error   : function(response) {
+                        console.log(response.responseText);
+                        toastr.error('Internal server error.', 'Error!');
+                    },
+                    complete : function() {
+                        $('.body-overlay').hide();
                     }
-                    else {
-                        showAlert(response);
-                    }
-                },
-                error   : function(response) {
-                    console.log(response.responseText);
-                    toastr.error('Internal server error.', 'Error!');
-                },
-                complete : function() {
-                    $('.body-overlay').hide();
-                }
+                });
             });
-        });
-    </script>
+        </script>
+    <?php endif; ?>
+
 </body>
 </html>

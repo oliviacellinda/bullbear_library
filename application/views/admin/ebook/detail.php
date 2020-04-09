@@ -238,7 +238,7 @@
                             li += '<li class="list-group-item d-flex justify-content-between align-items-center">' +
                                 data[i].nama_ebook +
                                 '<span class="btn-icon-only badge badge-danger badge-pill" data-id="'+data[i].id_ebook+'">' +
-                                    '<i class="fa fa-times"></i>'
+                                    '<i class="fa fa-times"></i>' +
                                 '</span>' +
                             '</li>';
                         }
@@ -299,7 +299,6 @@
                     contentType: false,
                     processData: false,
                     beforeSend: function() {
-                        // loading('.modal-body');
                         $('#progress').show();
                         $('#progress p').text('Uploading files...');
                         $('.modal-footer button').prop('disabled', true);
@@ -312,9 +311,9 @@
                     },
                     complete: function() {
                         $('#formEbook').trigger('reset');
-                        // removeLoading('.modal-body');
                         $('#progress').hide();
                         $('#progress p').text('');
+                        $('.progress-bar').attr('aria-valuenow', 0).css('width', '0%');
                         $('.modal-footer button').prop('disabled', false);
                         $('#modalEbook').modal('hide');
                         loadEbook();
