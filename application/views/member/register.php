@@ -85,7 +85,7 @@
                 let email = $('input[name="email_member"]').val().trim();
                 let nama = $('input[name="nama_member"]').val().trim();
 
-                if(username != '' && password != '') {
+                if(username != '' && password != '' && email != '' && nama != '') {
                     $.ajax({
                         type    : 'post',
                         url     : '<?=base_url('member/prosesRegister');?>',
