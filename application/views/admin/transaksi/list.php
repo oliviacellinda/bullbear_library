@@ -242,7 +242,7 @@
                     beforeSend: function() {
                         loading('.card');
                     },
-                    success : function(data) { console.log(data);
+                    success : function(data) {
                         if(data.type == 'error') {
                             showAlert(data);
                         }
