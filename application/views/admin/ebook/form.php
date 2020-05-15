@@ -63,8 +63,8 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="link">Link</label>
-                                                <input type="text" name="link" id="link" class="form-control" autocomplete="off">
+                                                <label for="link">Link Tokopedia</label>
+                                                <input type="text" name="link" id="link" class="form-control" autocomplete="off" placeholder="Masukkan link dengan format http://www.example.com">
                                                 <div class="invalid-feedback">Link harus diisi</div>
                                             </div>
                                             <div class="form-group">

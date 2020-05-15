@@ -87,7 +87,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-4 flex-grow">
-                                                    <h5 class="mb-2">Link</h5>
+                                                    <h5 class="mb-2">Link Tokopedia</h5>
                                                     <div class="ml-4 mb-0 font-weight-light">
                                                         <?=$video['link_video'];?>
                                                     </div>
@@ -203,8 +203,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="link">Link</label>
-                                    <input type="text" name="link" id="link" class="form-control" autocomplete="off" value="<?=$video['link_video'];?>">
+                                    <label for="link">Link Tokopedia</label>
+                                    <input type="text" name="link" id="link" class="form-control" autocomplete="off" value="<?=$video['link_video'];?>" placeholder="Masukkan link dengan format http://www.example.com">
                                     <div class="invalid-feedback">Link harus diisi</div>
                                 </div>
                                 <div class="form-group">
