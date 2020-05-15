@@ -133,11 +133,11 @@ function filterContent(text) {
     //     loadVideo(sort, 3, search, false, function(){seeMore('video')} );
     //     loadEbook(sort, 3, search, false, function(){seeMore('ebook')} );
     // }
-    if(segment.findIndex(arr => arr === 'video') !== -1) {
-        loadVideo('#template-ver-01', sort, 'all', search, false, '' );
+    if(segment.findIndex(arr => arr === 'my-video') !== -1) {
+        loadVideo('#template-ver-01', sort, 'all', search, true, '' );
     }
-    else if(segment.findIndex(arr => arr === 'ebook') !== -1) {
-        loadVideo('#template-ver-01', sort, 'all', search, false, '' );
+    else if(segment.findIndex(arr => arr === 'my-ebook') !== -1) {
+        loadVideo('#template-ver-01', sort, 'all', search, true, '' );
     }
 
     $('#btnFilter').find('button').text(text);
